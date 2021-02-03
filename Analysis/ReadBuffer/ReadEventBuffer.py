@@ -15,7 +15,7 @@ for i in range(0, nmodules):
 # Lettura del file vero e proprio
 file = open("example.txt", "r")
 line = 0  # variabile che mi tiene traccia della riga di lettura
-chantemp: int = 0  # variabile che mi tiene traccia del canale a cui sono arrivato nella lettura
+chantemp = 0  # variabile che mi tiene traccia del canale a cui sono arrivato nella lettura
 nbytes = 0  # variabile che mi dice quanti bytes sono stati dedicati all'evento
 nlines = 0  # mi dice quante righe occupa l'evento
 
