@@ -10,7 +10,6 @@ def module(row, line):
         if 128 > int(byte[l], 16) > 31:  # controllo che il byte sia un carattere ascii
             char = (bytes.fromhex(byte[l])).decode("ASCII")  # converto il byte in carattere
             print(char, end='')
-
     if line % 4 == 0:
         print()  # vado a capo ogni 4 righe = lunghezza della def del modulo
 
