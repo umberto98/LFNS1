@@ -18,7 +18,7 @@ void effsG () {
     std::vector<double> eydata;
     double x,y,ex,ey;
 
-    ifstream data("prova.dat"); //data file -> xdata + blank space + ydata + blank space + exdata + blank space + eydata
+    ifstream data("effdata.dat"); //data file -> xdata + blank space + ydata + blank space + exdata + blank space + eydata
 
     if (!data) {
         cout<<"Attenzione: il file dati non esiste \n";
@@ -48,17 +48,17 @@ void effsG () {
     g1->GetXaxis()->SetTitle(" HV [V] ");
     g1->GetYaxis()->SetTitle(" #varepsilon ");
 
-    TF1 *f1 = new TF1("f1","[0]/(1+exp(-[1]*(x-[2])))",0.95*xdata[0],1.05*xdata[size-1]);
-    f1->SetParameter(0,1);
+    TF1 *f1 = new TF1("f1","[0]/(1+exp([2]-[1]*x))",1000,2500);
+    f1->SetParameter(0,0.7);
     f1->SetParameter(1,1);
-    f1->SetParameter(2,0);
+    f1->SetParameter(2,1400);
     f1->SetLineColor(kBlue);
 
     gStyle->SetOptFit(1);
 
     TCanvas *c = new TCanvas();
     g1->Draw("AP");
-    g1->Fit("f1","R");
+    //g1->Fit("f1","R");
     c->SaveAs("effsG.png");
 
 } 
