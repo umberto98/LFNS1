@@ -21,8 +21,7 @@ void coinc () {
         cout<<"Attenzione: il file dati non esiste \n";
         return;
     }
-    while(!data.eof()) {
-        data>>x>>y>>ex>>ey;
+    while(data>>x>>y>>ex>>ey) {
         xdata.push_back(x);
         ydata.push_back(y);
         exdata.push_back(ex);
