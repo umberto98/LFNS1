@@ -14,7 +14,23 @@ def module(row, line):
         print()  # vado a capo ogni 4 righe = lunghezza della def del modulo
 
 
-# Funzione per leggere le righe con dati da 16 bit
+# Funzione per leggere le righe con dati da 8 bit
+# channeltemp è il canale che leggo, channeleff è il numero di canali fisici per modulo,
+# channellog è il numero di canali che metto nel testo per simmetria
+def data_8(row, chantemp, chaneff, chanlog):
+    data = row.split(": ", 2)  # divido in indice di riga e dati
+    seq = data[1].replace(" ", "")  # rimuovo gli spazi dai dati
+    byte = [seq[j:j + 2] for j in range(0, 32, 2)]  # creo una lista di byte(8bit)
+    # loop sui byte della riga
+    for i in range(0, 17):
+        if chantemp < chaneff:
+            print("Channel", chantemp, ":", int(byte[i], 16))  # converto tutti i miei canali fisici
+            chantemp += 1
+            if chantemp == chanlog:  # ho letto tutti i canali sul file
+                return 0
+    return chantemp
+
+# Funzione per leggere le righe con dati da 8 bit
 # channeltemp è il canale che leggo, channeleff è il numero di canali fisici per modulo,
 # channellog è il numero di canali che metto nel testo per simmetria
 def data_16(row, chantemp, chaneff, chanlog):
