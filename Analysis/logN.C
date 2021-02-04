@@ -19,8 +19,7 @@ void logN () {
         cout<<"Attenzione: il file dati non esiste \n";
         return;
     }
-    while(!data.eof()) {
-        data>>x>>y;
+    while(data>>x>>y) {
         xdata.push_back(x);
         ydata.push_back(y);
     }
