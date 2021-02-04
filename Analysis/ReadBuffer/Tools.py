@@ -6,7 +6,7 @@ def module(row, line):
     seq = data[1].replace(" ", "")  # rimuovo gli spazi dai dati
     byte = [seq[j:j + 2] for j in range(0, 32, 2)]  # creo una lista di byte(8bit)
     # loop sui byte della riga
-    for l in range(0, 15):
+    for l in range(0, 16):
         if 128 > int(byte[l], 16) > 31:  # controllo che il byte sia un carattere ascii
             char = (bytes.fromhex(byte[l])).decode("ASCII")  # converto il byte in carattere
             print(char, end='')
@@ -22,7 +22,7 @@ def data_8(row, chantemp, chaneff, chanlog):
     seq = data[1].replace(" ", "")  # rimuovo gli spazi dai dati
     byte = [seq[j:j + 2] for j in range(0, 32, 2)]  # creo una lista di byte(8bit)
     # loop sui byte della riga
-    for i in range(0, 17):
+    for i in range(0, 16):
         if chantemp < chaneff:
             print("Channel", chantemp, ":", int(byte[i], 16))  # converto tutti i miei canali fisici
             chantemp += 1
