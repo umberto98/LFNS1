@@ -14,6 +14,9 @@ for i in range(0, nmodules):
 
 # Lettura del file vero e proprio
 file = open("file.out", "r")
+f_out = open("output.txt", "w")
+#f_out.write("Quello che vogliamo")
+
 line = 0  # variabile che mi tiene traccia della riga di lettura
 chantemp = 0  # variabile che mi tiene traccia del canale a cui sono arrivato nella lettura
 nbytes = 0  # variabile che mi dice quanti bytes sono stati dedicati all'evento
@@ -87,3 +90,4 @@ for row in file:
 
 # chiudo il file
 file.close()
+f_out.close()
