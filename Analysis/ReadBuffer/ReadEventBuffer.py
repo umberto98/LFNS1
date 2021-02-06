@@ -13,24 +13,26 @@ for i in range(0, nmodules):
     m_stop.append(temp)
 
 # Lettura del file vero e proprio
-file = open("file.out", "r")
-f_out = open("output.txt", "w")
+file = open("piedistallo_05_6us_prova/piedestallo_05_6us_prova.out", "r")
+f_out = open("piedistallo_05_6us_prova/piedestallo_05_6us_prova.txt", "w")
 # f_out.write("Quello che vogliamo")
 
 line = 0  # variabile che mi tiene traccia della riga di lettura
 chantemp = 0  # variabile che mi tiene traccia del canale a cui sono arrivato nella lettura
 nbytes = 0  # variabile che mi dice quanti bytes sono stati dedicati all'evento
 nlines = 0  # mi dice quante righe occupa l'evento
-chanactscaler = [15]
+chanactscaler = [0]
 chanactadc = [10, 11]
 chanactpu = [0]
 chanactcs = [15]
-chanacttdc = [5, 6]
+chanacttdc = [6]
+
+f_out.write(
+    "Event number - ErrMask - Clock Scaler - Scaler - Scaler inhibited - TDC - ADC Ch {0} - ADC Ch {1} - PU\n".format(
+        str(chanactadc[0]), str(chanactadc[1])))
 
 # for su tutte le righe
 for row in file:
-    if line ==150:
-        break
     if line == 0:
         nbytes = Tools.firstline(row, f_out)  # setto in numero di bytes per evento
         nlines = int(nbytes / 16)  # setto il numero di linee per evento
@@ -81,7 +83,6 @@ for row in file:
 # chiudo il file
 file.close()
 f_out.close()
-
 
 # moduli non usati
 
