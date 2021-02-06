@@ -17,14 +17,14 @@ void coinc_m(){
   float counts[29] = {745, 771, 779, 813, 758, 771, 631, 470, 484, 398, 307, 252, 243, 178, 780, 752, 749, 765, 735, 722, 726, 660, 622, 485, 527, 426, 270, 152, 88};
 
   float time[29] = {300, 300, 300, 300, 300, 300, 300, 300, 400, 400, 400, 400, 400, 400, 300, 300, 300, 300, 300, 300, 300, 300, 300, 300, 400, 400, 400, 400, 400};
-    
+  float rate_bk = 3495./70592.;
   float y[29];
   float y_err[29];
   float rate_m  = 0;  //mi serve per l'altezza del grafico
   float counter = 0;
   
   for(int i=0;i<29;i++){
-    y[i] = counts[i]/time[i];
+    y[i] = counts[i]/time[i] - rate_bk;
     y_err[i] = TMath::Sqrt(counts[i])/time[i];
     if(-30<x[i] & x[i]<26){
       rate_m+=y[i];
@@ -36,7 +36,7 @@ void coinc_m(){
   //simulzione
   double gS_width = 30.;   //è centrato in zero
   double g1_width = 29.;
-  double rate = 1/352.81;
+  double rate = 1/(1.0197*352.81);
 
   //Calcoliamo il chi quadro per ogni simulazione
   for(double h = 3.; h<15.; h++){
@@ -56,7 +56,7 @@ void coinc_m(){
 	}
       }
       graph->Scale(rate);
-      //cout << "Altezza media punti: " << rate_m << "\nAltezza histo al centro: " << graph->GetMaximum() << endl;
+      cout << "Altezza media punti: " << rate_m << "\nAltezza histo al centro: " << graph->GetMaximum() << endl;
       
       double scarti = 0;
       for(int i=0; i<29; i++)

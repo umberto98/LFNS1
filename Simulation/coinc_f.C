@@ -17,14 +17,14 @@ void coinc_f(){
   float counts[29] = {745, 771, 779, 813, 758, 771, 631, 470, 484, 398, 307, 252, 243, 178, 780, 752, 749, 765, 735, 722, 726, 660, 622, 485, 527, 426, 270, 152, 88};
 
   float time[29] = {300, 300, 300, 300, 300, 300, 300, 300, 400, 400, 400, 400, 400, 400, 300, 300, 300, 300, 300, 300, 300, 300, 300, 300, 400, 400, 400, 400, 400};
-    
+  float rate_bk = 3495./70592.;
   float y[29];
   float y_err[29];
   float rate_m  = 0;  //mi serve per l'altezza del grafico
   float counter = 0;
   
   for(int i=0;i<29;i++){
-    y[i] = counts[i]/time[i];
+    y[i] = counts[i]/time[i] - rate_bk;
     y_err[i] = TMath::Sqrt(counts[i])/time[i];
     if(-30<x[i] & x[i]<26){
       rate_m+=y[i];
@@ -35,8 +35,8 @@ void coinc_f(){
 
   //simulzione
   double gS_width = 30.;   //è centrato in zero
-  double g1_width = 29.;
-  double rate = 1./(2.*352.81);
+  double g1_width = 30.;
+  double rate = 1./(2*1.0197*352.81);
   double scarti_min = 10000;
   double scarti_l = 0;
   double scarti_h = 0;
@@ -79,7 +79,14 @@ void coinc_f(){
   cout << "chi quadro: " << scarti_min <<
     "\nValore che minimizza il chi di offset: " << scarti_l <<
     "\nValore che minimizza il chi di jitter: " << scarti_h << endl;
-  
+
+  TCanvas* c = new TCanvas("c","c",800,1000);
+  TGraphErrors *graph1 = new TGraphErrors(29, x, y, 0, y_err);
+  graph1->SetMarkerSize(0);
+  graph1->SetMarkerStyle(1);
+  graph1->Draw("AP");
+  graph->Draw("histosame");
+
   TCanvas* c1 = new TCanvas("c1","c1",800,1000);
   chi->Draw("COLZ");
 }
