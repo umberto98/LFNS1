@@ -4,8 +4,6 @@
 #include "TFile.h"
 #include "TStyle.h"
 
-//
-
 //SENSIBILITA
 const double adcsens = 0.25; //-0.25 pC per canale -> prendiamo in modulo
 const double tdcsens = 2.5; //2.5 ns per canale
