@@ -83,14 +83,16 @@ void ReadTree () {
             cout<<" Canali NEGATIVI "<<ev<<endl;
         }*/
         hadc10->Fill(adc(event.adc10/*-ped10*/)); //togliamo i canali del piedistallo
-        if (event.pu==0) hadc11->Fill(adc(event.adc11/*-ped11*/));
+        if (event.pu==0) {
+            hadc11->Fill(adc(event.adc11/*-ped11*/));
+            hclk->Fill(clkscal(event.clk));
+            htdc->Fill(tdcconv(event.tdc));
+            hcorr11->Fill(adc(event.adc11),tdcconv(event.tdc));
+            hcorr10->Fill(adc(event.adc10),tdcconv(event.tdc));
+            hcorr11clk->Fill(adc(event.adc11),clkscal(event.clk));
+            hcorr10clk->Fill(adc(event.adc10),clkscal(event.clk));
+        }
         else hadc11flag->Fill(adc(event.adc11/*-ped11*/));
-        hclk->Fill(clkscal(event.clk));
-        htdc->Fill(tdcconv(event.tdc));
-        hcorr11->Fill(adc(event.adc11),tdcconv(event.tdc));
-        hcorr10->Fill(adc(event.adc10),tdcconv(event.tdc));
-        hcorr11clk->Fill(adc(event.adc11),clkscal(event.clk));
-        hcorr10clk->Fill(adc(event.adc10),clkscal(event.clk));
     }
 
     hadc10->Rebin(8);
