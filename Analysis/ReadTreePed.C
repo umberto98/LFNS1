@@ -26,11 +26,7 @@ double clkscal (int ch) {return clksens*ch;}
 double tdcconv (int ch) {return tdcsens*ch;}
 double adc (int ch) {return adcsens*ch;}
 
-//PIEDISTALLO
-const int ped10 = 270; //channel
-const int ped11 = 163; //channel
-
-void ReadTree () {
+void ReadTreePed () {
     
     typedef struct {
         int clk, scal, inhscal, tdc, adc10, adc11, pu; //clk scaler, scaler, scaler inibito, tdc, adc ch10, adc ch11 e pattern unit
@@ -76,15 +72,18 @@ void ReadTree () {
     hcorr10clk->GetXaxis()->SetTitle(" Charge [pC] ");
     hcorr10clk->GetYaxis()->SetTitle(" Time [ns] ");
 
+    double s10=0.;
+    double s11=0.;
+    int entries = tree->GetEntriesFast()+1; //inizia da 0
+
     for(int ev=0;ev<tree->GetEntriesFast();ev++) {
         tree->GetEvent(ev);
         if (ev%10000==0) cout<<" Leggendo e processando l'evento "<<ev<<endl; 
-        /*if (event.adc10<ped10 || event.adc11<ped11) {
-            cout<<" Canali NEGATIVI "<<ev<<endl;
-        }*/
-        hadc10->Fill(adc(event.adc10/*-ped10*/)); //togliamo i canali del piedistallo
-        if (event.pu==0) hadc11->Fill(adc(event.adc11/*-ped11*/));
-        else hadc11flag->Fill(adc(event.adc11/*-ped11*/));
+        s11=s11+event.adc11;
+        s10=s10+event.adc10;
+        hadc10->Fill(adc(event.adc10)); //togliamo i canali del piedistallo
+        if (event.pu==0) hadc11->Fill(adc(event.adc11));
+        else hadc11flag->Fill(adc(event.adc11));
         hclk->Fill(clkscal(event.clk));
         htdc->Fill(tdcconv(event.tdc));
         hcorr11->Fill(adc(event.adc11),tdcconv(event.tdc));
@@ -93,10 +92,11 @@ void ReadTree () {
         hcorr10clk->Fill(adc(event.adc10),clkscal(event.clk));
     }
 
+    cout<<" CANALE PIEDISTALLO CH10 (S1) "<<(double)s11/entries<<endl;
+    cout<<" CANALE PIEDISTALLO CH11 (SG) "<<(double)s10/entries<<endl;
+
     hadc10->Rebin(8);
-    hadc11->Rebin(8);
-    hadc11flag->Rebin(8);
-    htdc->Rebin(8);
+    hadc11->Rebin(8);;
 
     //gStyle->SetOptStat(0);
 
@@ -107,43 +107,6 @@ void ReadTree () {
     TCanvas *c2 = new TCanvas();
     hadc11->Draw("histo");
     c2->SaveAs("sgadc.png");
-
-    TCanvas *c3 = new TCanvas();
-    hadc11flag->Draw("histo");
-    c3->SaveAs("sgadc.png");
-
-    TCanvas *c4 = new TCanvas();
-    hclk->Draw("histo");    
-    c4->SetLogy(1);
-    c4->SaveAs("clkscal.png");
-
-    TCanvas *c5 = new TCanvas();
-    htdc->Draw("histo");
-    c5->SetLogy(1);
-    c5->SaveAs("tdc.png");
-
-    TCanvas *c6 = new TCanvas();
-    hadc11->Draw("histo");
-    hadc11flag->SetLineColor(kRed);
-    hadc11flag->Draw("hist same");
-    c6->BuildLegend();
-    c6->SaveAs("sgboth.png");
-
-    TCanvas *c7 = new TCanvas();
-    hcorr11->DrawCopy("COLZ");
-    c7->SaveAs("hcorr11.png");
-
-    TCanvas *c8 = new TCanvas();
-    hcorr10->DrawCopy("COLZ");
-    c8->SaveAs("hcorr10.png");
-
-    TCanvas *c9 = new TCanvas();
-    hcorr11clk->DrawCopy("COLZ");
-    c9->SaveAs("hcorr11clk.png");
-
-    TCanvas *c10 = new TCanvas();
-    hcorr10clk->DrawCopy("COLZ");
-    c10->SaveAs("hcorr10clk.png");
 
     wfile->Write();
 
