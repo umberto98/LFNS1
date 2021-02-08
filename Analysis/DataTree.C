@@ -31,7 +31,7 @@ double tdc (int ch) {return tdcsens*ch;}
 double adc (int ch) {return adcsens*ch;}
 
 //MAIN
-void BufferPlot () {
+void DataTree () {
 
    TFile *wfile = new TFile("MyTree.root","recreate");
    TTree *tree = new TTree("T","TTree con 2 branches");
