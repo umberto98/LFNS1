@@ -6,29 +6,9 @@
 #include "Riostream.h"
 #include "TFile.h"
 
-//SENSIBILITA
-const double adcsens = 0.25; //-0.25 pC per canale -> prendiamo in modulo
-const double tdcsens = 2.5; //2.5 ns per canale
-const double clksens = 100; //100 ns per canale
-
-//DYNAMIC RANGE
-const int adcdyn = 2048; //max num canali adc
-const int tdcdyn = 2048; //max num canali tdc
-const int clkdyn = 100; //sappiamo solo il full scale range 
-
-//FULL SCALE RANGE
-const double adcrng = adcsens*adcdyn;
-const double tdcrng = tdcsens*tdcdyn; 
-const double clkrng = clksens*clkdyn; //10 microsec
-
 //ERROR MASK
 long int check1 = 1111111100000000; //7 canali accesi
 long int check2 = 1111111110000000; //8 canali accesi solo per i primi eventi -> c'è un modulo che viene spento 
-
-//CONVERSIONI
-double clkscal (int ch) {return clksens*ch;} 
-double tdc (int ch) {return tdcsens*ch;}
-double adc (int ch) {return adcsens*ch;}
 
 //MAIN
 void DataTree () {
