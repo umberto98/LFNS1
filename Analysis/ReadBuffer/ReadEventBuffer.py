@@ -13,8 +13,8 @@ for i in range(0, nmodules):
     m_stop.append(temp)
 
 # Lettura del file vero e proprio
-file = open("piedistallo_05_6us_prova/piedestallo_05_6us_prova.out", "r")
-f_out = open("piedistallo_05_6us_prova/piedestallo_05_6us_prova.txt", "w")
+file = open("notte_weekend/weekend.out", "r")
+f_out = open("notte_weekend/weekend.txt", "w")
 # f_out.write("Quello che vogliamo")
 
 line = 0  # variabile che mi tiene traccia della riga di lettura

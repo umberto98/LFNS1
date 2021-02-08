@@ -1,0 +1,1 @@
+File prima del cambio gate a 10 e ritorno al gate 6
