@@ -120,9 +120,9 @@ void ReadTree_u () {
 	    if(event.clk>=62){
 	      hadc11fkst->Fill(adc(event.adc11-ped11));
 	    }else{
-	      if(event.clk>15)
+	      if(event.clk>=8)
 		hadc11el->Fill(adc(event.adc11-ped11));
-	      if(event.clk<15)
+	      if(event.clk<8)
 		hadc11cap->Fill(adc(event.adc11-ped11));
 	    }
 	    
@@ -130,9 +130,11 @@ void ReadTree_u () {
 	}
 	if(event.adc10<1980 & adc(event.adc10-ped10)>0)
 	  hadc10->Fill(adc(event.adc10-ped10)); //togliamo i canali del piedistallo
-	hclk->Fill(event.clk);
-	//hclk->Fill(clkscal(event.clk));
+	if(adc(event.adc11)>120 & adc(event.adc11-ped11)>0)
+	  hclk->Fill(event.clk);
 	htdc->Fill(tdcconv(event.tdc));
+	//hclk->Fill(clkscal(event.clk));
+
 	
     }
 
