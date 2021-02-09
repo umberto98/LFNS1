@@ -25,7 +25,7 @@ void DataTree () {
    //clk scaler, scaler, scaler inibito, tdc, adc ch10, adc ch11 e pattern unit
     tree->Branch("Data",&event.clk,"clk:scal:inhscal:tdc:adc10:adc11:pu/I");
     
-    ifstream buff("data.txt");
+    ifstream buff("ReadBuffer/weekend/weekend.txt");
 
     if (!buff) {
         cout<<"Attenzione: il file dati non esiste \n";

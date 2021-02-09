@@ -35,3 +35,4 @@ Analysis/ReadBuffer/.idea/ReadBuffer.iml
 Analysis/ReadBuffer/.idea/modules.xml
 *.xml
 *.dat
+*.C~
