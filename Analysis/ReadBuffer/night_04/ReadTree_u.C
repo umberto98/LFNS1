@@ -48,7 +48,7 @@ Double_t explandau(Double_t *x, Double_t *par){
 }
 //PIEDISTALLO
 const int ped10 = 162; //channel
-const int ped11 = 270; //channel
+const int ped11 = 383; //channel
 
 void ReadTree_u () {
     
@@ -121,9 +121,9 @@ void ReadTree_u () {
 	    if(event.clk>=62){
 	      hadc11fkst->Fill(adc(event.adc11-ped11));
 	    }else{
-	      if(event.clk>=8)
+	      if(event.clk>=10)
 		hadc11el->Fill(adc(event.adc11-ped11));
-	      if(event.clk<8)
+	      if(event.clk<10)
 		hadc11cap->Fill(adc(event.adc11-ped11));
 	    }
 	    
@@ -159,7 +159,7 @@ void ReadTree_u () {
     TCanvas *c1 = new TCanvas("c1","c1");
     hadc11PU->GetXaxis()->SetTitle(" Charge [pC] ");
     hadc11PU->GetYaxis()->SetTitle(" Entries ");
-    hadc11PU->Fit("fitlandauPU","R");
+    //hadc11PU->Fit("fitlandauPU","R");
     hadc11PU->Draw("PE");
     cout << "Counts casual PU=1 SG: " << hadc11PU->Integral(0,16) << endl;
 
@@ -178,7 +178,7 @@ void ReadTree_u () {
     hadc11fkst->GetXaxis()->SetTitle(" Charge [pC] ");
     hadc11fkst->GetYaxis()->SetTitle(" Entries ");
     hadc11fkst->Draw("PE");
-    hadc11fkst->Fit("fitlandauexp","R");
+    //hadc11fkst->Fit("fitlandauexp","R");
     
     TCanvas *c5 = new TCanvas("c5","c5");
     hadc11el->GetXaxis()->SetTitle(" Charge [pC] ");
@@ -193,16 +193,25 @@ void ReadTree_u () {
     TCanvas *c7 = new TCanvas("c7","c7");
     hadc10->GetXaxis()->SetTitle(" Charge [pC] ");
     hadc10->GetYaxis()->SetTitle(" Entries ");
-    hadc10->Fit("fitdoublelandau","R");
+    //hadc10->Fit("fitdoublelandau","R");
     hadc10->Draw("PE");
 
-
+    TCanvas *c10 = new TCanvas("c10","c10");
+    hadc11fkst->SetLineColor(kRed);
+    hadc11->Draw("histo");
+    hadc11fkst->Draw("histosames");
+    hadc11el->SetLineColor(kBlue);
+    hadc11el->Draw("histosames");
+    hadc11cap->SetLineColor(kGreen);
+    hadc11cap->Draw("histosames");
+    c10->BuildLegend();
+    /*
     TCanvas *c9 = new TCanvas("c9","c9");
     hadc11fkst->SetLineColor(kRed);
     hadc11->Draw("histo");
     hadc11fkst->Draw("histosames");
     c9->BuildLegend();
-    /*
+        
     TCanvas *c8 = new TCanvas("c8","c8");
     hadc11->Scale(1/hadc11->GetEntries());
     hadc11PU->Scale(1/hadc11PU->GetEntries());
