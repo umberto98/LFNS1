@@ -1,5 +1,6 @@
 #include "Riostream.h"
 #include "TGraphErrors.h"
+#include "TMultiGraph.h"
 #include "TF1.h"
 #include "TStyle.h"
 #include "TCanvas.h"
@@ -10,12 +11,25 @@ void swap(double &a,double&b);
 void orderdata (std::vector<double> &xdata, std::vector<double> &ydata, std::vector<double> &exdata, std::vector<double> &eydata); //xdata in ascending order
 void printvec (std::vector<double> data);
 
+const int fitdata = 5; //escludo gli ultimi 5 dati
+
 void effsG () {
 
     std::vector<double> xdata;
     std::vector<double> ydata;
     std::vector<double> exdata;
     std::vector<double> eydata;
+
+    std::vector<double> xdataex;
+    std::vector<double> ydataex;
+    std::vector<double> exdataex;
+    std::vector<double> eydataex;
+
+    std::vector<double> newxdata;
+    std::vector<double> newydata;
+    std::vector<double> newexdata;
+    std::vector<double> neweydata;
+
     double x,y,ex,ey;
 
     ifstream data("effdata.dat"); //data file -> xdata + blank space + ydata + blank space + exdata + blank space + eydata
@@ -30,6 +44,7 @@ void effsG () {
         exdata.push_back(ex);
         eydata.push_back(ey);
     }
+
     if(xdata.size()!=ydata.size()) {
         cout<<" Attenzione: diverse dimensioni fra dati su x e dati su y\n";
         return;
@@ -39,25 +54,66 @@ void effsG () {
     int size = (int)xdata.size();
     cout<<" Numero di dati: "<<size<<"\n";
 
-    TGraphErrors *g1 = new TGraphErrors(size,&xdata[0],&ydata[0],&exdata[0],&eydata[0]);
+    cout<<" Dati X:";
+    printvec(xdata);
+    cout<<" Dati Y:";
+    printvec(ydata);
+
+    for(int i=0;i<size;i++) {
+
+        if(i<(size-fitdata)) {
+            newxdata.push_back(xdata[i]);
+            newydata.push_back(ydata[i]);
+            newexdata.push_back(exdata[i]);
+            neweydata.push_back(eydata[i]);
+        }
+        else {
+            xdataex.push_back(xdata[i]);
+            ydataex.push_back(ydata[i]);
+            exdataex.push_back(exdata[i]);
+            eydataex.push_back(eydata[i]);
+        }
+
+    }
+
+    cout<<" Nuovi Dati X:";
+    printvec(newxdata);
+    cout<<" Nuovi Dati Y:";
+    printvec(newydata);
+
+    cout<<" Dati Rimossi X:";
+    printvec(xdataex);
+    cout<<" Dati Rimossi Y:";
+    printvec(ydataex);
+
+    TGraphErrors *g1 = new TGraphErrors(size-fitdata,&newxdata[0],&newydata[0],&newexdata[0],&neweydata[0]);
     g1->SetMarkerStyle(21);
     g1->SetMarkerSize(0.8);
-    g1->SetMarkerColor(kRed);
-    g1->SetTitle(" Efficienza SG ");
-    g1->GetXaxis()->SetTitle(" HV [V] ");
-    g1->GetYaxis()->SetTitle(" #varepsilon ");
+    g1->SetMarkerColor(kGreen);
 
-    TF1 *f1 = new TF1("f1","[0]/(1+exp([2]-[1]*x))",1000,2500);
+    TGraphErrors *g2 = new TGraphErrors(fitdata,&xdataex[0],&ydataex[0],&exdataex[0],&eydataex[0]);
+    g2->SetMarkerStyle(5);
+    g2->SetMarkerSize(0.8);
+    g2->SetMarkerColor(kRed);
+
+    TMultiGraph *gtot = new TMultiGraph();
+    gtot->Add(g1);
+    gtot->Add(g2);
+    gtot->SetTitle(" Efficienza SG ");
+    gtot->GetXaxis()->SetTitle(" HV [V] ");
+    gtot->GetYaxis()->SetTitle(" #varepsilon ");
+
+    TF1 *f1 = new TF1("f1","[0]/(1+exp((x-[1])/[2]))",newxdata[0]-10,xdataex[0]-10);
     f1->SetParameter(0,0.7);
-    f1->SetParameter(1,1);
-    f1->SetParameter(2,1400);
+    f1->SetParameter(1,1300);
+    f1->SetParameter(2,-50);
     f1->SetLineColor(kBlue);
 
     gStyle->SetOptFit(1);
 
     TCanvas *c = new TCanvas();
-    g1->Draw("AP");
-    //g1->Fit("f1","R");
+    gtot->Draw("AP");
+    g1->Fit("f1","R");
     c->SaveAs("effsG.png");
 
 } 
@@ -83,7 +139,7 @@ void orderdata (std::vector<double> &xdata, std::vector<double> &ydata, std::vec
 }
 
 void printvec (std::vector<double> data) {
-    cout<<" v = {";
+    cout<<" v = { ";
     for(int i=0;i<(int)data.size();i++) {
         cout<<data[i]<<" ";
     }
