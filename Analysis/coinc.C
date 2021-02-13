@@ -31,13 +31,13 @@ void coinc () {
 
     double x,y,ex,ey;
 
-    ifstream data("coinc.dat"); //data file -> xdata + blank space + ydata + blank space + exdata + blank space + eydata
+    ifstream data("coincdata.dat"); //data file -> xdata + blank space + ydata + blank space + exdata + blank space + eydata
 
     if (!data) {
         cout<<"Attenzione: il file dati non esiste \n";
         return;
     }
-    while(data>>x>>y>>ey>>ex) { 
+    while(data>>x>>y>>ex>>ey) { 
         xdata.push_back(x);
         ydata.push_back(y);
         exdata.push_back(ex);
