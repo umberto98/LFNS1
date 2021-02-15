@@ -5,7 +5,6 @@
 #include "TH2D.h"
 #include "TCanvas.h"
 #include "TStyle.h"
-#include "TText.h"
 
 //SENSIBILITA
 const double adcsens = 0.25; //-0.25 pC per canale -> prendiamo in modulo
@@ -27,9 +26,16 @@ double clkscal (int ch) {return clksens*ch;}
 double tdcconv (int ch) {return tdcsens*ch;}
 double adc (int ch) {return adcsens*ch;}
 
-int adcinv(double charge) {return (int)(charge/adcsens);} //restituisce i canali
+//PIEDISTALLO
+const int ped10 = 270; //channel
+const int ped11 = 163; //channel
 
-void ReadTreePed () {
+bool corr = false;
+
+void NewTDC () {
+
+
+    cout<<" //////////////////////////////////// \n CONFRONTO TDC - CLK SCALER CON E SENZA P.U. \n CALCOLO PESO NOISE E RESCALING \n /////////////////////////////////// \n";
     
     typedef struct {
         int clk, scal, inhscal, tdc, adc10, adc11, pu; //clk scaler, scaler, scaler inibito, tdc, adc ch10, adc ch11 e pattern unit
@@ -47,8 +53,12 @@ void ReadTreePed () {
     TH1D *hadc10 = new TH1D("hadc10"," ADC CH10 - S1 ",adcdyn,0.,adcrng);//s1
     TH1D *hadc11 = new TH1D("hadc11"," ADC CH11 - SG ",adcdyn,0.,adcrng);//sg
     TH1D *hadc11flag = new TH1D("hadc11flag"," ADC CH11 - SG - No Electrons ",adcdyn,0.,adcrng);//sg  
-    TH1D *hclk = new TH1D("hclk"," CLK SCALER ",clkdyn,0.,clkrng);//clk scaler
+    TH1D *hclk = new TH1D("hclk"," CLK - NO FLAG ",clkdyn,0.,clkrng);//clk scaler
     TH1D *htdc = new TH1D("htdc"," TDC ",tdcdyn,0.,tdcrng);//tdc
+    TH1D *htdcflag = new TH1D("htdcflag"," TDC - FLAG ",tdcdyn,0,tdcrng); //tdc con flag
+    TH1D *htdcnew = new TH1D("htdcnew"," TDC - NO NOISE ",tdcdyn,0.,tdcrng); //tdc senza noise
+    TH1D *hclkflag = new TH1D("hclkflag"," CLK - FLAG ",clkdyn,0,clkrng); //clk con flag
+    TH1D *hclknew = new TH1D("hclknew"," CLK - NO NOISE ",clkdyn,0.,clkrng); //tdc senza noise
 
     TH2D *hcorr11 = new TH2D("hcorr11"," Correlation ADC (SG) - TDC ",adcdyn,0.,adcrng,tdcdyn,0.,tdcrng);
     TH2D *hcorr10 = new TH2D("hcorr10"," Correlation ADC (S1) - TDC ",adcdyn,0.,adcrng,tdcdyn,0.,tdcrng);
@@ -77,10 +87,13 @@ void ReadTreePed () {
 
     for(int ev=0;ev<tree->GetEntriesFast();ev++) {
         tree->GetEvent(ev);
-        if (ev%10000==0) cout<<" Leggendo e processando l'evento "<<ev<<endl; 
+        if (ev%100000==0) cout<<" Leggendo e processando l'evento "<<ev<<endl; 
+        /*if (event.adc10<ped10 || event.adc11<ped11) {
+            cout<<" Canali NEGATIVI "<<ev<<endl;
+        }*/
+        hadc10->Fill(adc(event.adc10-ped10)); //togliamo i canali del piedistallo
         if (event.pu==0) {
-            hadc11->Fill(adc(event.adc11));
-            hadc10->Fill(adc(event.adc10)); 
+            hadc11->Fill(adc(event.adc11-ped11));
             hclk->Fill(clkscal(event.clk));
             htdc->Fill(tdcconv(event.tdc));
             hcorr11->Fill(adc(event.adc11),tdcconv(event.tdc));
@@ -88,89 +101,96 @@ void ReadTreePed () {
             hcorr11clk->Fill(adc(event.adc11),clkscal(event.clk));
             hcorr10clk->Fill(adc(event.adc10),clkscal(event.clk));
         }
-        else hadc11flag->Fill(adc(event.adc11));
-    }
-
-    char strped10[50]; //val medio piedistallo canale 10
-    char strped11[50]; //val medio piedistallo canale 11
-    char strped10dx[50]; //corno dx canale 10
-    char strped11dx[50]; //corno dx canale 11
-    char strped10sx[50]; //corno sx canale 10
-    char strped11sx[50]; //corno sx canale 11
-
-    double ped10 = hadc10->GetMean();
-    double ped11 = hadc11->GetMean();
-    int i10dx = 1;
-    int i10sx = 1;
-    int i11dx = 1;
-    int i11sx = 1;
-    double max10dx = 0.;
-    double max11dx = 0.;
-    double max10sx = 0.;
-    double max11sx = 0.;
-
-    for (int i=1;i<adcdyn+1;i++) {
-        double cont10 = hadc10->GetBinContent(i);
-        double cont11 = hadc11->GetBinContent(i);
-        double val10 = hadc10->GetBinCenter(i);
-        double val11 = hadc11->GetBinCenter(i);
-        if (val10>ped10 && cont10>max10dx) {
-            max10dx = cont10;
-            i10dx = i;
-        }
-        if (val10<ped10 && cont10>max10sx) {
-            max10sx = cont10;
-            i10sx = i;
-        }
-        if (val11>ped11 && cont11>max11dx) {
-            max11dx = cont11;
-            i11dx = i;
-        }
-        if (val11<ped11 && cont11>max11sx) {
-            max11sx = cont11;
-            i11sx = i;
+        if (event.pu==1) {
+            hadc11flag->Fill(adc(event.adc11-ped11));
+            htdcflag->Fill(tdcconv(event.tdc));
+            hclkflag->Fill(clkscal(event.clk));
         }
     }
-
-    double ped10dx = hadc10->GetBinCenter(i10dx);
-    double ped11dx = hadc11->GetBinCenter(i11dx);
-    double ped10sx = hadc10->GetBinCenter(i10sx);
-    double ped11sx = hadc11->GetBinCenter(i11sx);
-
-    sprintf(strped10," PEDESTAL CH10 (MEDIO) = %0.1f [pC] / %d [CH] ",ped10,adcinv(ped10));
-    sprintf(strped11," PEDESTAL CH11 (MEDIO) = %0.1f [pC] / %d [CH] ",ped11,adcinv(ped11));
-    sprintf(strped10dx," PEDESTAL CH10 (DX) = %0.1f [pC] / %d [CH] ",ped10dx,adcinv(ped10dx));
-    sprintf(strped11dx," PEDESTAL CH11 (DX) = %0.1f [pC] / %d [CH] ",ped11dx,adcinv(ped11dx));
-    sprintf(strped10sx," PEDESTAL CH10 (SX) = %0.1f [pC] / %d [CH] ",ped10sx,adcinv(ped10sx));
-    sprintf(strped11sx," PEDESTAL CH11 (SX) = %0.1f [pC] / %d [CH] ",ped11sx,adcinv(ped11sx));
-
-    cout<<strped10<<endl<<strped11<<endl<<strped10dx<<endl<<strped11dx<<endl<<strped10sx<<endl<<strped11sx<<endl;
-
-    TText *t1 = new TText(0.2,0.2,strped10);
-    TText *t2 = new TText(0.2,0.2,strped11);
-    TText *t3 = new TText(0.2,0.2,strped10dx);
-    TText *t4 = new TText(0.2,0.2,strped11dx);
-    TText *t5 = new TText(0.2,0.2,strped10sx);
-    TText *t6 = new TText(0.2,0.2,strped11sx);
 
     hadc10->Rebin(8);
     hadc11->Rebin(8);
-    
-    gStyle->SetOptStat(0);
+    hadc11flag->Rebin(8);
+    htdc->Rebin(8);
+    htdcflag->Rebin(8);
+    htdcnew->Rebin(8);
 
     TCanvas *c1 = new TCanvas();
-    hadc10->Draw("histo");
-    t1->Draw("same");
-    t3->Draw("same");
-    t5->Draw("same");
-    //c1->SaveAs("s1adc.png");
+    htdcflag->DrawCopy("hist");
+    c1->SetLogy(1);
+    c1->SaveAs("tdcflag.png");
 
     TCanvas *c2 = new TCanvas();
-    hadc11->Draw("histo");
-    t2->Draw("same");
-    t4->Draw("same");
-    t6->Draw("same");
-    //c2->SaveAs("sgadc.png");
+    hclkflag->DrawCopy("hist");
+    c2->SetLogy(1);
+    c2->SaveAs("clkflag.png");
+
+    double fkstop = hclkflag->GetBinContent(63)+hclkflag->GetBinContent(64)+hclkflag->GetBinContent(65); //overflow clk scaler
+    double noise = hclkflag->Integral()-fkstop; 
+    double weight = fkstop/noise;
+
+    cout<<" Peso Segnale "<<weight*100<<"% \n";
+    cout<<" Peso Noise "<<(1-weight)*100<<"% \n";
+
+    for (int i=63;i<=clkdyn+1;i++) {
+        hclk->SetBinContent(i,0);
+        hclkflag->SetBinContent(i,0);
+    }
+
+    //RE-SCALING CLK SCALER
+    hclkflag->Scale((1-weight)/hclkflag->Integral());
+    hclk->Scale(1./hclk->Integral());
+
+    //RE-SCALING TDC
+    htdcflag->Scale((1-weight)/htdcflag->Integral());
+    htdc->Scale(1./htdc->Integral());
+
+    cout<<" Check Integral CLK - NO FLAG "<<hclk->Integral()<<" e CLK - FLAG "<<hclkflag->Integral()<<endl;
+    cout<<" Check Integral TDC - NO FLAG "<<htdc->Integral()<<" e TDC - FLAG "<<htdcflag->Integral()<<endl;
+
+    //gStyle->SetOptStat(0);
+
+    TCanvas *c12 = new TCanvas();
+    hclk->SetLineColor(kRed);
+    hclk->Draw("hist");
+    hclkflag->Draw("hist same");
+    hclknew->Add(hclk,hclkflag,1,-1);
+    hclknew->SetLineColor(kGreen);
+    //hclknew->Draw(" hist same");
+    c12->SetLogy();
+    c12->BuildLegend();
+    c12->SaveAs("clknew.png");
+
+    TCanvas *c13=new TCanvas();
+    htdc->SetLineColor(kRed);
+    htdc->Draw("hist");
+    htdcflag->Draw("hist same");
+    htdcnew->Add(htdc,htdcflag,1,-1);
+    htdcnew->SetLineColor(kGreen);
+    //htdcnew->Draw(" hist same");
+    c13->SetLogy();
+    c13->BuildLegend();
+    c13->SaveAs("tdcnew.png");
+
+    if (corr) {
+
+        TCanvas *c7 = new TCanvas();
+        hcorr11->DrawCopy("COLZ");
+        c7->SaveAs("hcorr11.png");
+
+        TCanvas *c8 = new TCanvas();
+        hcorr10->DrawCopy("COLZ");
+        c8->SaveAs("hcorr10.png");
+
+        TCanvas *c9 = new TCanvas();
+        hcorr11clk->DrawCopy("COLZ");
+        c9->SaveAs("hcorr11clk.png");
+
+        TCanvas *c10 = new TCanvas();
+        hcorr10clk->DrawCopy("COLZ");
+        c10->SaveAs("hcorr10clk.png");
+
+    }
 
     wfile->Write();
 

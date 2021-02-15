@@ -5,7 +5,7 @@
 #include "TH2D.h"
 #include "TCanvas.h"
 #include "TStyle.h"
-#include "TText.h"
+#include "TPad.h"
 
 //SENSIBILITA
 const double adcsens = 0.25; //-0.25 pC per canale -> prendiamo in modulo
@@ -27,9 +27,21 @@ double clkscal (int ch) {return clksens*ch;}
 double tdcconv (int ch) {return tdcsens*ch;}
 double adc (int ch) {return adcsens*ch;}
 
-int adcinv(double charge) {return (int)(charge/adcsens);} //restituisce i canali
+//PIEDISTALLO
+const int ped10 = 270; //channel
+const int ped11 = 163; //channel
 
-void ReadTreePed () {
+//OVERFLOW ADC -> Sono gli ultimi 24 canali 
+const int adcov10 = 24; //tolgo gli ultimi 24 canali di overflow 
+const int adcov11 = 24; //stessa cosa, ma al canale 11
+
+//OVERFLOW CLK SCALER -> Canale dal 63 compreso in poi
+const int clkov = 63;
+
+//CORRELAZIONI
+bool corr = true; //true se si voglioni i plot di correlazione
+
+void Correlation () {
     
     typedef struct {
         int clk, scal, inhscal, tdc, adc10, adc11, pu; //clk scaler, scaler, scaler inibito, tdc, adc ch10, adc ch11 e pattern unit
@@ -77,10 +89,13 @@ void ReadTreePed () {
 
     for(int ev=0;ev<tree->GetEntriesFast();ev++) {
         tree->GetEvent(ev);
-        if (ev%10000==0) cout<<" Leggendo e processando l'evento "<<ev<<endl; 
-        if (event.pu==0) {
-            hadc11->Fill(adc(event.adc11));
-            hadc10->Fill(adc(event.adc10)); 
+        if (ev%100000==0) cout<<" Leggendo e processando l'evento "<<ev<<endl; 
+        /*if (event.adc10<ped10 || event.adc11<ped11) {
+            cout<<" Canali NEGATIVI "<<ev<<endl;
+        }*/
+        if (event.pu==0 /*&& event.adc10<(adcdyn-adcov10) && event.adc11<(adcdyn-adcov11) && event.clk<62*/) { //cuts
+            hadc10->Fill(adc(event.adc10-ped10)); //togliamo i canali del piedistallo
+            hadc11->Fill(adc(event.adc11-ped11));
             hclk->Fill(clkscal(event.clk));
             htdc->Fill(tdcconv(event.tdc));
             hcorr11->Fill(adc(event.adc11),tdcconv(event.tdc));
@@ -88,89 +103,80 @@ void ReadTreePed () {
             hcorr11clk->Fill(adc(event.adc11),clkscal(event.clk));
             hcorr10clk->Fill(adc(event.adc10),clkscal(event.clk));
         }
-        else hadc11flag->Fill(adc(event.adc11));
+        if (event.pu==1 && event.adc10<(adcdyn-adcov10) && event.adc11<(adcdyn-adcov11)) hadc11flag->Fill(adc(event.adc11-ped11));
     }
-
-    char strped10[50]; //val medio piedistallo canale 10
-    char strped11[50]; //val medio piedistallo canale 11
-    char strped10dx[50]; //corno dx canale 10
-    char strped11dx[50]; //corno dx canale 11
-    char strped10sx[50]; //corno sx canale 10
-    char strped11sx[50]; //corno sx canale 11
-
-    double ped10 = hadc10->GetMean();
-    double ped11 = hadc11->GetMean();
-    int i10dx = 1;
-    int i10sx = 1;
-    int i11dx = 1;
-    int i11sx = 1;
-    double max10dx = 0.;
-    double max11dx = 0.;
-    double max10sx = 0.;
-    double max11sx = 0.;
-
-    for (int i=1;i<adcdyn+1;i++) {
-        double cont10 = hadc10->GetBinContent(i);
-        double cont11 = hadc11->GetBinContent(i);
-        double val10 = hadc10->GetBinCenter(i);
-        double val11 = hadc11->GetBinCenter(i);
-        if (val10>ped10 && cont10>max10dx) {
-            max10dx = cont10;
-            i10dx = i;
-        }
-        if (val10<ped10 && cont10>max10sx) {
-            max10sx = cont10;
-            i10sx = i;
-        }
-        if (val11>ped11 && cont11>max11dx) {
-            max11dx = cont11;
-            i11dx = i;
-        }
-        if (val11<ped11 && cont11>max11sx) {
-            max11sx = cont11;
-            i11sx = i;
-        }
-    }
-
-    double ped10dx = hadc10->GetBinCenter(i10dx);
-    double ped11dx = hadc11->GetBinCenter(i11dx);
-    double ped10sx = hadc10->GetBinCenter(i10sx);
-    double ped11sx = hadc11->GetBinCenter(i11sx);
-
-    sprintf(strped10," PEDESTAL CH10 (MEDIO) = %0.1f [pC] / %d [CH] ",ped10,adcinv(ped10));
-    sprintf(strped11," PEDESTAL CH11 (MEDIO) = %0.1f [pC] / %d [CH] ",ped11,adcinv(ped11));
-    sprintf(strped10dx," PEDESTAL CH10 (DX) = %0.1f [pC] / %d [CH] ",ped10dx,adcinv(ped10dx));
-    sprintf(strped11dx," PEDESTAL CH11 (DX) = %0.1f [pC] / %d [CH] ",ped11dx,adcinv(ped11dx));
-    sprintf(strped10sx," PEDESTAL CH10 (SX) = %0.1f [pC] / %d [CH] ",ped10sx,adcinv(ped10sx));
-    sprintf(strped11sx," PEDESTAL CH11 (SX) = %0.1f [pC] / %d [CH] ",ped11sx,adcinv(ped11sx));
-
-    cout<<strped10<<endl<<strped11<<endl<<strped10dx<<endl<<strped11dx<<endl<<strped10sx<<endl<<strped11sx<<endl;
-
-    TText *t1 = new TText(0.2,0.2,strped10);
-    TText *t2 = new TText(0.2,0.2,strped11);
-    TText *t3 = new TText(0.2,0.2,strped10dx);
-    TText *t4 = new TText(0.2,0.2,strped11dx);
-    TText *t5 = new TText(0.2,0.2,strped10sx);
-    TText *t6 = new TText(0.2,0.2,strped11sx);
 
     hadc10->Rebin(8);
     hadc11->Rebin(8);
-    
+    hadc11flag->Rebin(8);
+    htdc->Rebin(8);
+
+    hcorr11->Rebin2D(8);
+    hcorr10->Rebin2D(8);
+    hcorr11clk->RebinX(8);
+    hcorr10clk->RebinX(8);
+
     gStyle->SetOptStat(0);
 
-    TCanvas *c1 = new TCanvas();
-    hadc10->Draw("histo");
-    t1->Draw("same");
-    t3->Draw("same");
-    t5->Draw("same");
-    //c1->SaveAs("s1adc.png");
+    if (corr==true) {
 
-    TCanvas *c2 = new TCanvas();
-    hadc11->Draw("histo");
-    t2->Draw("same");
-    t4->Draw("same");
-    t6->Draw("same");
-    //c2->SaveAs("sgadc.png");
+        TCanvas *c1 = new TCanvas("c1","c1",1920,1080);
+        c1->Divide(2,2);
+        c1->cd(2); //in alto a dx
+        hcorr11->DrawCopy("COLZ");
+        gPad->SaveAs("hcorr11_1.png");
+        c1->cd(4); //in basso a dx
+        hadc11->Draw("hist");
+        gPad->SaveAs("hcorr11_2.png");
+        c1->cd(1); //in alto a sx
+        gPad->SetLogy(1);
+        htdc->Draw("hist");
+        gPad->SaveAs("hcorr11_3.png");
+        c1->SaveAs("hcorr11.png");
+
+        TCanvas *c2 = new TCanvas("c2","c2",1920,1080);
+        c2->Divide(2,2);
+        c2->cd(2); //in alto a dx
+        hcorr10->DrawCopy("COLZ");
+        gPad->SaveAs("hcorr10_1.png");
+        c2->cd(4); //in basso a dx
+        hadc10->Draw("hist");
+        gPad->SaveAs("hcorr10_2.png");
+        c2->cd(1); //in alto a sx
+        gPad->SetLogy(1);
+        htdc->Draw("hist");
+        gPad->SaveAs("hcorr10_3.png");
+        c2->SaveAs("hcorr10.png");
+
+        TCanvas *c3 = new TCanvas("c3","c3",1920,1080);
+        c3->Divide(2,2);
+        c3->cd(2); //in alto a dx
+        hcorr11clk->DrawCopy("COLZ");
+        gPad->SaveAs("hcorr11clk_1.png");
+        c3->cd(4); //in basso a dx
+        hadc11->Draw("hist");
+        gPad->SaveAs("hcorr11clk_2.png");
+        c3->cd(1); //in alto a sx
+        gPad->SetLogy(1);
+        hclk->Draw("hist");
+        gPad->SaveAs("hcorr11clk_3.png");
+        c3->SaveAs("hcorr11clk.png");
+
+        TCanvas *c4 = new TCanvas("c4","c4",1920,1080);
+        c4->Divide(2,2);
+        c4->cd(2); //in alto a dx
+        hcorr10clk->DrawCopy("COLZ");
+        gPad->SaveAs("hcorr10clk_1.png");
+        c4->cd(4); //in basso a dx
+        hadc10->Draw("hist");
+        gPad->SaveAs("hcorr10clk_2.png");
+        c4->cd(1); //in alto a sx
+        gPad->SetLogy(1);
+        hclk->Draw("hist");
+        gPad->SaveAs("hcorr10clk_3.png");
+        c4->SaveAs("hcorr10clk.png");
+
+    }
 
     wfile->Write();
 
