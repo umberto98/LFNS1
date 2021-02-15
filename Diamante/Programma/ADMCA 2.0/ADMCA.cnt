@@ -1,0 +1,98 @@
+:Base ADMCA.hlp
+1 Overview
+2 Overview=overview
+2 Hardware Requirements=hardware_requirements
+2 The Start Dialog=start_dialog
+2 MCA8000A Setup and Quick Start Guide=quick_start
+2 PX4 Setup and Quick Start Guide=quick_start_dpp
+1 MCA8000A Setup
+2 MCA8000A Setup and Quick Start Guide=quick_start
+2 Pocket MCA Setup=preferences_mca
+2 Set MCA8000A Acquisition Mode=set_acquisition
+1 DP4/PX4/DP5 Setup
+2 PX4 Setup and Quick Start Guide=quick_start_dpp
+2 Setting Input Offset (PX4)=setinputoffset
+2 Digital Oscilloscope=oscope
+2 DP4/PX4/DP5 Info Pane=dpp_info_pane
+2 PX4 Update DPP Notice Dialog=dpp_update_dpp_dialog
+2 DP4/PX4/DP5 Spectrum File Format Additional Features=dpp_file_format
+2 DP4/X123/PX4/DP5 Properties
+3 General Tab=dpp_properties_general
+3 MCA Tab=dpp_properties_mca
+3 Shaping Tab=dpp_properties_shaping
+3 Gain & Pole Zero Tab=dpp_properties_gainpz
+3 Power Tab=dpp_properties_power
+3 Misc. Tab=dpp_properties_misc
+2 Setting the Slow and Fast Thresholds
+3 Setting the Slow Threshold=setslowthresh
+3 Setting the Fast Threshold=setfastthresh
+3 Manually Setting the Slow and Fast Thresholds=manualsetthresh
+3 Setting Thresholds for the Current Gain=autothreshgain
+1 X-123 Uses DP4 Setup
+2 X-123 Uses DP4 Setup README=x123_readme  
+1 X-123 SDD Uses DP5 Setup
+2 X-123 SDD Uses DP5 Setup README=x123SDD_readme
+2 X-123 SDD, PX4/DP5 With XR-100SDD Setup README=x123SDD_NEG_HV_readme
+2 Check Polarity Info Panel Message (DP5 / X-123 SDD)=x123SDD_DP5_HV_POL_ERROR_readme
+1 Analyzing Data with the ADMCA Software
+2 Regions of Interest and How to Define Them=roi
+2 Calibrating a Spectrum / Applying a Calibration=calibrate
+2 Using Mathematical Expressions=define_expression
+2 Auto Calibration=autocalset
+2 Peak Search=peak_search
+2 Peak Calculations=peak_calculations
+2 Repeat Measurements (MCA8000A/DP4/PX4/DP5)=repeat_measurements
+2 MCA8000A Multichannel Scaling (MCS) - Limited Functionality=mcs
+2 DP4/PX4/DP5 Multichannel Scaling (MCS)=dpp_mcs
+2 Amptek Spectrum File Format (MCA8000A/DP4/PX4/DP5)=file_format
+1 MCA8000A Technical Reference
+2 MCA8000A Hardware Description=hardware
+2 MCA8000A Technical Specifications=technical_specs
+2 MCA8000A Remote Operation (Stand-Alone Mode)=stand_alone_mode
+2 MCA8000A Data Transfer Protocol=protocol
+2 MCA8000A DOS Software=dos_software
+2 MCA8000A Dynamic  Link Libraries DLL (APIs)=dynamic_link_libraries
+1 DP4/PX4/DP5 Technical Reference
+2 DP4/PX4/DP5 Reference Documents=dpp_doc
+1 Menus
+2 File menu=IDH_mnuFile
+2 View menu=IDH_mnuView
+2 MCA menu=IDH_mnuMCA
+2 Display menu=IDH_mnuDisplay
+2 Analyze menu=IDH_mnuAnalyze
+2 DPP Menu=IDH_mnuDPP
+2 Help menu=IDH_mnuHelp
+1 Displays
+2 Main Spectrum Display=spectrum_display
+2 MCA8000A Info Pane=info_pane
+2 DP4/PX4/DP5 Info Pane=dpp_info_pane
+2 Select Pane=select_pane
+1 Dialogs
+2 Start Dialogs
+3 Start Dialog=start_dialog
+3 Starting ADMCA General Preferences=preferences_general
+2 Spectrum Acquisition
+3 Peak Search=peak_search
+3 Calibrate=calibrate
+3 Define Regions of Interest=define_roi
+3 Plot Pane Preferences=preferences_plot
+3 Modify Spectrum Properties=modify_spectrum
+3 Define Expression=define_expression
+3 Spectra List=spectra_list
+3 Spectra Options=spectra
+2 Option Dialogs
+3 Review or Modify Preferences=modify_preferences
+3 DP4/X123/PX4/DP5/X123SDD Properties=dpp_properties
+2 Common Dialogs
+3 Open=open_file
+3 Save / Save As=save_as
+3 Print=IDH_mnuFilePrint
+3 About ADMCA=IDH_mnuHelpAbout
+1 Toolbars
+2 Toolbar=toolbar
+2 DP4/PX4/DP5 Toolbar Buttons=dpp_toolbar_buttons
+2 Status Bar=status_bar
+2 DP4/PX4/DP5 Status Bar Indicators=dpp_status_bar
+1 Keyboard and Mouse
+2 Keyboard Shortcuts=keyboard_shortcuts
+2 Mouse Definitions=mouse_definitions

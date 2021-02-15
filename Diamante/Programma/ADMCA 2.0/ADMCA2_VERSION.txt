@@ -1,0 +1,43 @@
+
+ADMCA Analog and Digital Acquisition Software (MCA8000A/DP4/X123/GAMMA-RAD/PX4/X123SDD)                 VNREV20110317
+
+Copyright (C) 2005-2011 Amptek, Inc.
+
+2.0 VERSION NOTES/NEW FEATURES
+------------------------------
+
+DATE              Version     Notes/New Features
+-------------     -------     ------------------
+20100729          2.0.0.0     ---New Features:
+                              Runs in Windows 7 with WinUSB Drivers.
+                              Runs in XP with APAUSB(Legacy) OR WinUSB Drivers.
+			      Backward Compatible with ADMCA Versions 1.x.x.x.
+
+20101206          2.0.0.1     ---Updates:
+                              Spectrum printer output scaled to better fit widescreen.
+                              Handler added for errors causes by (faulty) printer drivers.
+			       
+20101222          2.0.0.2     ---Updates:
+                              Increased number of decimal places for centriod < 10.0keV.
+                              Added centroid decimal places for improved Super SDD calibration.
+			       
+20110208          2.0.0.3     ---Updates:
+                              Disabled upload timestamp error message during spectrum repeat measure.
+
+		       
+20110222          2.0.0.4     ---Updates:
+                              Disabled XRS-FP x100 functions (x100 functions not supported in ADMCA).
+
+		       
+20110317          2.0.0.5     ---Updates:
+                              Added -HV display option for PX4 SDD (fw4.08) with WinUSB support.
+
+
+
+
+
+
+
+
+
+
