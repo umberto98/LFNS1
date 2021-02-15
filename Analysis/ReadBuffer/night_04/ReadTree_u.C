@@ -48,7 +48,7 @@ Double_t explandau(Double_t *x, Double_t *par){
 }
 //PIEDISTALLO
 const int ped10 = 162; //channel
-const int ped11 = 383; //channel
+const int ped11 = 384; //channel
 
 void ReadTree_u () {
     
@@ -121,9 +121,9 @@ void ReadTree_u () {
 	    if(event.clk>=62){
 	      hadc11fkst->Fill(adc(event.adc11-ped11));
 	    }else{
-	      if(event.clk>=10)
+	      if(clkscal(event.clk)>1000.)
 		hadc11el->Fill(adc(event.adc11-ped11));
-	      if(event.clk<10)
+	       //if(event.clk<10)
 		hadc11cap->Fill(adc(event.adc11-ped11));
 	    }
 	    
@@ -155,31 +155,31 @@ void ReadTree_u () {
      
      
      
-     
+    /*
     TCanvas *c1 = new TCanvas("c1","c1");
     hadc11PU->GetXaxis()->SetTitle(" Charge [pC] ");
     hadc11PU->GetYaxis()->SetTitle(" Entries ");
     //hadc11PU->Fit("fitlandauPU","R");
     hadc11PU->Draw("PE");
     cout << "Counts casual PU=1 SG: " << hadc11PU->Integral(0,16) << endl;
-
+    
     TCanvas *c2 = new TCanvas("c2","c2");
     hclkPU->GetXaxis()->SetTitle(" Time [ns] ");
     hclkPU->GetYaxis()->SetTitle(" Entries ");
     c2->SetLogy(1);
     hclkPU->Draw("histo");
-
+    */
     TCanvas *c3 = new TCanvas("c3","c3");
     hadc11->GetXaxis()->SetTitle(" Charge [pC] ");
     hadc11->GetYaxis()->SetTitle(" Entries ");
     hadc11->Draw("histo");
-
+    /*
     TCanvas *c4 = new TCanvas("c4","c4");
     hadc11fkst->GetXaxis()->SetTitle(" Charge [pC] ");
     hadc11fkst->GetYaxis()->SetTitle(" Entries ");
     hadc11fkst->Draw("PE");
     //hadc11fkst->Fit("fitlandauexp","R");
-    
+    */
     TCanvas *c5 = new TCanvas("c5","c5");
     hadc11el->GetXaxis()->SetTitle(" Charge [pC] ");
     hadc11el->GetYaxis()->SetTitle(" Entries ");
@@ -189,17 +189,17 @@ void ReadTree_u () {
     hadc11cap->GetXaxis()->SetTitle(" Charge [pC] ");
     hadc11cap->GetYaxis()->SetTitle(" Entries ");
     hadc11cap->Draw("histo");
-    
+    /*
     TCanvas *c7 = new TCanvas("c7","c7");
     hadc10->GetXaxis()->SetTitle(" Charge [pC] ");
     hadc10->GetYaxis()->SetTitle(" Entries ");
     //hadc10->Fit("fitdoublelandau","R");
     hadc10->Draw("PE");
-
+    */
     TCanvas *c10 = new TCanvas("c10","c10");
-    hadc11fkst->SetLineColor(kRed);
+    //hadc11fkst->SetLineColor(kRed);
     hadc11->Draw("histo");
-    hadc11fkst->Draw("histosames");
+    //hadc11fkst->Draw("histosames");
     hadc11el->SetLineColor(kBlue);
     hadc11el->Draw("histosames");
     hadc11cap->SetLineColor(kGreen);
