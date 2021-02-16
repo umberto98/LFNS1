@@ -8,7 +8,7 @@
 #include "TMath.h"
 
 const double sig = 60.; //supponiamo che il segnale sia circa 20 intorno al valore massimo
-const bool drawh = true; //metti true se vuoi 20 canvas di istogrammi con relativo fit
+const bool drawh = false; //metti true se vuoi 20 canvas di istogrammi con relativo fit
 
 double calcmean (TH1D *h1, double a, double b);
 void printvec(std::vector<double> v);
@@ -114,13 +114,13 @@ void AnalysisMCA () {
     //-------------------
 
     int minindex = std::min_element(rms.begin(),rms.end()) - rms.begin();
-    cout<<" Indice di RMS Min: "<<minindex<<endl;
-    cout<<" RMS Minima "<<rms[minindex]<<" @ HV WORK = "<<hv[minindex]<<endl;
+    cout<<" Indice di Ris. Max.: "<<minindex<<endl;
+    cout<<" Risoluzione Massima "<<rms[minindex]<<" @ HV WORK = "<<hv[minindex]<<endl;
 
     TGraph *gmean = new TGraph(20,&hv[0],&mean[0]);
-    gmean->SetTitle(" CENTROIDI vs HV ");
+    gmean->SetTitle(" CENTROIDE vs HV ");
     gmean->GetXaxis()->SetTitle(" HV [V] ");
-    gmean->GetYaxis()->SetTitle(" Centroide [CH] ");
+    gmean->GetYaxis()->SetTitle(" CENTROIDE [CH] ");
     gmean->SetMarkerStyle(20);
     gmean->SetMarkerSize(0.9);
     gmean->SetMarkerColor(kRed);
@@ -129,9 +129,9 @@ void AnalysisMCA () {
     gmean->Draw("AP");
 
     TGraph *grms = new TGraph(20,&hv[0],&rms[0]);
-    grms->SetTitle(" RMS RELATIVA vs HV ");
+    grms->SetTitle(" RISOLUZIONE RELATIVA vs HV ");
     grms->GetXaxis()->SetTitle(" HV [V] ");
-    grms->GetYaxis()->SetTitle(" RMS RELATIVA [%] ");
+    grms->GetYaxis()->SetTitle(" RISOLUZIONE RELATIVA [%] ");
     grms->SetMarkerStyle(20);
     grms->SetMarkerSize(0.9);
     grms->SetMarkerColor(kBlue);
