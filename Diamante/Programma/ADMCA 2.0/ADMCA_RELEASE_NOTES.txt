@@ -1,0 +1,291 @@
+
+ADMCA Analog and Digital Acquisition Software (MCA8000A/DP4/X123/GAMMA-RAD/PX4)                 RNREV20070613
+
+Copyright (C) 2005-2007 Amptek, Inc.
+
+
+
+SPECIAL NOTE FOR X-123 and Gamma-RAD Users
+------------------------------------------
+ADMCA setup and operation is the same for the X-123, Gamma-RAD and DP4.  Refer to the DP4 setup and operational information unless otherwise noted.  See "X123 README.txt" or "X123 README.pdf" for more details.
+
+Amptek, Inc.
+14 De Angelo Dr.
+Bedford MA 01730
+781-275-2242			www.amptek.com
+
+
+ADMCA RELEASE NOTES Contents:
+-----------------------------
+1.0 RELEASE NOTES/NEW FEATURES
+2.0 KNOWN ISSUES
+3.0 TROUBLE SHOOTING HINTS
+4.0 HOW DO I? (DP4/PX4)
+
+
+1.0 RELEASE NOTES/NEW FEATURES
+------------------------------
+
+DATE              Version     Notes/New Features
+-------------     -------     ------------------
+20050829          1.0.0.0     first release build
+
+20050908          1.0.0.1     ---New Features:
+                              DP4/PX4 Tune Fast Threshold - DPP Shaping Property Page
+                              PX4 Auto Input Offsets  - DPP Gain & Pole Zero Property Page
+                              2-ROI Auto Calibration - Plot Preferences Page
+
+                              ---Updates:
+                              More DPP information from dp4/px4 files is displayed on Info Pane. 
+                              Help file graphics have been updated. (Help updates are in progress.)
+                              DP4 gains have been changed to actual values. (Not yet tested.)
+    
+20050915          1.0.0.2     ---New Features:
+                              Tune Slow Threshold - DPP MCA Property Page
+
+                              ---Updates:
+                              2-ROI Auto Calibration now matches ROIs with energies (no "active" ROI needed)
+                              About box displays DPP historical device information from plots if available
+    
+20050922          1.0.0.3     ---New Features:
+                              Faster "Tune Input Offset" function and button. - DPP Gain & Pole Zero Property Page
+					Faster "Tune Slow Threshold" function and button. - DPP MCA Property Page
+					Faster "Tune Fast Threshold" function and button. - DPP Shaping Property Page
+					"Tune Slow/Fast Thresholds" menu item and toolbar button.
+					--> "Tune Slow/Fast Thresholds" <-- REMOVE SOURCE BEFORE TUNING
+					"Auto Thresholds" option for scaling thresholds with gain changes.
+					Added "Gain Scale Thresholds Enable" checkbox. - DPP MCA Property Page
+					"Tune Input Offset" automatically runs when needed. (Gain changes from toolbar)
+					
+                              ---Updates:
+                              Auto Calibration Fe55 values (install defaults) now has 2 decimal places (5.89,6.49)
+					"Time to Peak" changed to "Peaking Time" in all uses.
+					Dead Time displayed only for > 500 counts/sec.
+
+20051003          1.0.0.4     ---New Features:
+					Added MultiChannel Scaler (MCS) 
+					Added MultiChannel Scaler controls - DPP MCA Property Page
+					
+                              ---Updates:
+                              Updated Info Pane to display acquisition mode with/without delta
+                              Updated MCA Spectra plots to include MCS settings
+                              Monitors on the DPP Power Property Page now start automatically. 
+                              Help file topics have been updated. (Help updates are in progress.)
+
+20051107          1.0.0.5     ---New Features:
+                              Added MCS Start/Stop Features. MCS toolbar function now match MCA.
+                              Add DPP version test at startup. (Tests for Firmware/FPGA < 4.0)
+
+                              ---Updates:
+                              Updated controls to match latest DP4/PX4 controls and functions.
+                              Help file topics have been updated.
+
+20051108          1.0.0.6     ---New Features:
+                              Send/Read PX4 non-volitile descriptor text. - DPP MISC Property Page
+                              
+                              ---Updates:
+                              Oscilloscope task bar icon has descriptor text.
+                              USB Driver Version is now displayed in "About ADMCA Dialog".
+                              Additional reminder messages for MCS, Slow/Fast Threshold Tune.
+
+20051109          1.0.0.7     ---New Features:
+                              None.
+                              
+                              ---Updates:
+                              Added more information to auto tune fast threshold error messages.
+                              Added more information text fopr SCA channel Level adjust to GroupBox.
+                              Updated the oscilloscope to adjust to display modes above 96 dpi (normal) mode.
+                              
+20051215          1.0.0.8     ---New Features:
+                              None.
+                              
+                              ---Updates:
+                              Remove DP4 version tests from Update DPP Notice Dialog.
+                              Slow Threshold Spin now 2 steps +/- for 256 channels. (MCA Configuration Setting)
+
+20051222          1.0.0.9     ---New Features:
+                              Plot file Save and SaveAs Now copies original Spectrum Config and Status data
+                              from DP4/PX4 plot files when opened then resaved.
+                              
+                              ---Updates:
+                              None.
+
+20060807          1.0.0.10    ---New Features:
+                              None.
+                              
+                              ---Updates:
+                              Updated mca spectrum file load to prevent data read errors.
+                              Updated menus, dialogs and messages for X-123.
+                              Added X-123 README notice to help. (PDF and TXT versions also.)  
+
+20060914          1.0.0.11    ---New Features (Advanced Users):
+                              Added Multiple USB DPP support.  When enabled, ADMCA can be assigned to
+                              a DPP device.  ADMCA can read all USB DPP devices.
+                              A DPP can then be selected form the device list.
+
+                              NOTE: YOU MUST SELECT THE CORRECT DEVICE TYPE BEFORE SELECTING A DEVICE
+                                    FROM THE LIST OF AVAILABLE DEVICES.
+
+                              NOTE: SEE AssignAppToDpp.pdf and SelectDpp.pdf
+                              
+                              Added Variance FWHM.
+
+20070129          1.0.0.12    ---New Features:
+                              None.
+                              
+                              ---Updates:
+                              MCA8000A Peak Mode, updated PMCA AbsoluteMode flag handling for option PA.
+
+20070212          1.0.0.13    ---New Features:
+                              Gauss FWHM reporting for XRS-FP interface.
+                              
+                              ---Updates:
+                              Calculate peak data fix for opening spectra in gauss mode.
+                              Prevents errors while loading spectra in Gauss Mode.
+
+20070405          1.0.0.14    ---New Features:
+                              New DP4 coarse gain toolbar controls, Toggles between settings.
+                              
+                              ---Updates:
+                              None.
+
+20070521          1.0.0.15    ---New Features:
+                              None.
+                              
+                              ---Updates:
+                              Updated Slow/Fast Threshold Tuning to prevent memory errors when tuning
+                              with ROIs set.
+
+20070525          1.0.0.16    ---New Features:
+                              None.
+                              
+                              ---Updates:
+                              Updated automatic gain adjustment and display. Prevents automatic gain
+                              adjustment except when the toolbar gain controls are used.
+
+
+2.0 KNOWN ISSUES
+----------------
+
+Known issues in PMCA/ADMCA releases:
+
+2.1 The Gauss(G) FWHM and CENTRIOD calculations are computer resource intensive and may cause the program to close in some computers.  A low resource version is planned for a future release.
+Minimum System Recommendations for systems using the Gauss(G) FWHM and CENTRIOD calculations:
+- 1GHz Pentium 4 Processor or Equivalent
+- Windows XP SP2
+- 256K RAM
+- 300MB Free Disk Space
+
+2.2 The last configuration settings AFTER the last APPLY can be recalled by clicking the "Recall Previous Software Configuration" button.
+
+2.3 WIN 3.1, WIN98 First Edition, WinXP Multimedia Edition w/WideScreen 
+- The plot doesn't always redraw and the graphics may disappear.
+- The oscilloscope does not draw correctly.   
+- Windows 98 First Edition and older operating systems are not supported.
+- WinXP Multimedia Edition w/WideScreen should work if MFC compatible settings are used.
+- If the oscilloscope trace is shifted out of place:
+    ---- Set the DISPLAY DPI SETTING TO 96 DPI. (This is the normal setting.)
+    - 1. Right mouse click on the display to bring up the display settings dialog.
+    - 2. Goto the "Settings" tab.
+    - 3. On the Settings page click the "Advanced" button to bring up the Advanced Settings Dialog.
+    - 4. On the General page, "DPI setting" drop-down box, select Normal size (96 DPI).
+
+Most functions in the PMCA and ADMCA applications can work in these older operating systems, but some features will not work or may not work properly.
+
+2.4 On first use after PX4 power-up, if the power-up configuration is used, for many detectors it is necessary to send a configuration after the system has stablized. (This can take 10 seconds or more.)
+
+2.5 When creating configuration files for a DP4/PX4, the APPLY button must be pressed to apply the current configuration BEFORE attempting to save the file.
+
+2.6 The ADMCA application needs to have valid PX4.cfg and DP4.cfg files in the application directory.
+
+2.7 The Info Pane (or other panel fonts) may not display correctly after setting the font. Restart program to reset the application to the new font.
+
+2.8 After application window settings have been changed or if the display properties have been changed while the application has been running, the application main window may not restore, but can be iconified and maximized.  This is due to the window position being off the visual portion of the desktop.  To restore the application window to the visual portion of the desktop, right-click on the taskbar icon, select "Move" and move the mouse until the application can be seen.
+
+2.9 When the device type is changed:
+- select the device 
+- restart the application with the new device setting
+- this is recommended to be done before running an acquisition.
+
+2.10 When dialogs are opened in one screen resolution and closed in another, Windows may save invalid dialog position values for the Preferences dialog (pmca/admca) and possibly other dialogs.  This causes the program to stop menu, dialog and other functions.
+- This problem is rare and can be easily fixed.
+- A script is provided to reset PMCA/ADMCA dialog positions. 
+	- The script is DLG_FIX.txt.
+	- Copy this file to a temporary directory, then rename then copy to DLG_FIX.reg.
+	- Double click on the file to execute.
+- Future versions of the ADMCA application will test for Windows dialog positioning errors. 
+
+2.11 After the number of channels is changed in the configuration, the DP4/PX4 should be restarted with the new settings.
+
+2.12 When the oscilloscope and is open and the gain is changed, the "Tune Input Offset" function may be triggered.  This causes the input offset value to be changed a number of times.  The oscilloscope input offset value may not read the final tuned value.  To insure that the input offset value is the lastest value, close the reopen the oscilloscope.  NOTE: The "Refresh" button currently only resets the USB connection if the oscilloscope is not updating.  Additional value refreshes and updates to the "Refresh" button to refresh all the scope display data values are planned for a future release.
+
+
+3.0 TROUBLE SHOOTING HINTS
+--------------------------
+
+Suggestion: Always wait 10 seconds after power up for detector setup to stabilize before running acquisitions.
+
+The DP4/PX4 has been previously configured and the configuration doesn't seem to work after power up:
+- First, try the DPPCFG button on the toolbar.
+- Second, if DPPCFG doesn't work, press the CONNECT button, once connected press DPPCFG. 
+- Third, check if the unit is connected and the configuration can be read.
+
+If the DP4/PX4 seems to be working and the USB communications doesn't:
+- Close the acquisition software.  
+- Unplug the USB cable from the unit.  
+- Wait a few seconds then plug the USB cable back in.
+
+The digital oscilloscope (DP4/PX4) is not displaying the shaped pulse.
+- The digital oscilloscope is not triggering on the shaped pulse edges.
+- The fast threshold must be set correctly for the (DP4/PX4) oscilloscope to trigger properly. 
+
+
+4.0 HOW DO I? (DP4/PX4)
+-----------------------
+1. Q. I just got a DP4/PX4.  How do I get a spectrum from my DP4/PX4.
+   A. Consult your QUICK START GUIDE included with your unit.
+
+2. Q. My unit is acquiring and I know if I'm getting pulses.  I am viewing
+      "Shaped Pulse" with the Amptek Digital Oscilloscope, but I am not 
+      seeing any shaped pulses.  How can I see the shaped pulses.
+   A. Check the fast threshold.  The fast threshold must be set properly
+      to view the shaped pulse on the digital oscilloscope.
+
+3. Q. I saved a custom configuration for my DP4/PX4 unit.  Can I directly access 
+      my custom configuration from the "DP4/PX4 Properties - General Tab"?
+   A. The "Open Predefined Configuration File" opens and loads a configuration 
+      from a selected file.
+
+4. Q. Can I directly access my custom configuration from the 
+      Detector Configuration ComboBox?
+   A. Yes, but first the software must be configured.
+      This is only recommended if you understand the ".INI" file format.
+      0. ---> BACKUP THE AmptekDC.ini FILE BEFORE PROCEEDING. <---
+      1. Copy your custom configuration to the "\DET_CFG" sub-directory.
+      2. Find the AmptekDC.ini file in the same directory as ADMCA.exe.
+      3. Open the AmptekDC.ini file with a text editor.
+      4. Find the [Amptek Detector Configurations] section.
+      5. Add your configuration description and file location.
+             NOTE: The format is DESCRIPTION=DET_CFG_FILE_PATH
+         
+         Example:  
+             DESCRIPTION: My Custom Configuration
+             DET_CFG_FILE_PATH: MyCustCfg.cfg
+         Add to AmptekDC.ini:
+             My Custom Configuration=DET_CFG\MyCustCfg.cfg
+
+5. Q. I am running in DP4/PX4 MCS mode, I know my unit is acquiring
+      in MCA mode.  I am not getting any MCS counts.  
+   A. Check and set SCA8.  The energy channels must be set in
+      SCA8.  SCA8 must also be enabled for MCS to run. 
+
+6. Q. I am acquiring a spectrum and I press the "TUNE" button on the
+      toolbar.  Why doesn't the slow and fast thresholds set properly?
+   A. The source MUST be removed to "auto" tune the thresholds.
+
+
+----------------------------------------------------------------
+ADMCA Analog and Digital Acquisition Software (MCA8000A/DP4/X123/GAMMA-RAD/PX4)
+Copyright (C) 2005-2007 Amptek, Inc.
+Last Update: Wednesday, June 13, 2007 
+

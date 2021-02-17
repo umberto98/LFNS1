@@ -1,0 +1,1 @@
+These file are only for use with the MCA8000A Option PA Package for airborne and suspended particle counting.  They are not to be used for nuclear instrumentation applications.

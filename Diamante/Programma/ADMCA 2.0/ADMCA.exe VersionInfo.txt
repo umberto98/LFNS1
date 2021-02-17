@@ -1,0 +1,38 @@
+------------------20091224_101350------------------
+Filename = ADMCA.exe
+Type: = Application
+Size: = 1.95MB (2,039,808 bytes)
+Compressed Size: = File is not compressed
+MS-DOS name: = ADMCA.EXE
+File version:: = 1, 0, 0, 22
+Description: = ADMCA Analog and Digital Acquisition Software
+Copyright: = Copyright (C) 1998-2009 Amptek, Inc.
+Comments = ADMCA - Acquisition and Display Program
+Company Name = Amptek, Inc.
+Internal Name = ADMCA
+Language = English (United States)
+Legal Trademarks = Copyright (C) 1998-2009 Amptek, Inc.
+Original Filename = ADMCA.exe
+Product Name = ADMCA
+Product Version = 1, 0, 0, 22
+
+Supports:
+---------
+MCA8000A
+MCA8000A with USB to Serial Converter
+DP4
+GAMMARAD
+PX4
+X123
+DP5
+X123-SDD
+
+Calls XRS-FP, Mini-X from Toolbar
+Includes DP5 Boot Flags Section in Spectrum (MCA) Files
+Displays MCA8000A USB in About dialog if RS232 USB option is present.
+Added Retries for MCA8000A uploads.
+Updated/Changed Count Rate to Input Rate.
+Updated count calculations for DP5 PX4 Emulation.
+Changed WinHelp to HtmlHelp. Added XP Styles.
+
+
