@@ -11,20 +11,17 @@ bool checkstr(string a, string b); //fa un check su due stringhe
 void ReadMCA () {
 
     char filepos[50]; //nome del file di quelli a tensioni positive
-    char fileneg[50]; //nome del file di quelli a tensioni negative
 
-    TH1D* hgamma[3]; //2 istogrammi dei gamma
+    TH1D* hpos[6]; //10 istogrammi a tensioni positive
 
     char hposname[50]; //nome degli istogrammi positivi
     char hpostitle[50]; //titolo degli istogrammi positivi
 
     int cntpos = 0; //contatore da 0 a 9 per riempire l'array di istogrammi
 
-    for(int i=0;i<=2;i++) {
+    for(int i=0;i<=10;i=i+2) {
 
-        if (i==0) sprintf(filepos,"SpettroCoConDelayFisso.mca");
-	if (i==1) sprintf(filepos,"SpettroNaDelayFisso.mca");
-	if (i==2) sprintf(filepos,"SpettroNaSenzaDelayFisso.mca");
+        sprintf(filepos,"CalibrazTempi_%d.mca",i);
         ifstream inputpos(filepos);
 
         if (!inputpos) {
@@ -32,12 +29,11 @@ void ReadMCA () {
             return;
         }
 
-        sprintf(hposname,"hday1_%d",cntpos);
-        if (i==0) sprintf(hpostitle," SPETTRO MCA Co - Fisso");
-	if (i==1) sprintf(hpostitle," SPETTRO MCA Na - Fisso");
-	if (i==2) sprintf(hpostitle," SPETTRO MCA Na - Fisso - No Delay");
-	
-        hgamma[cntpos] = new TH1D(hposname,hpostitle,ch,0.,(double)ch);
+
+        sprintf(hposname,"hpos_%d",cntpos);
+        sprintf(hpostitle," SPETTRO TAC / Delay = %d ns",i);
+
+        hpos[cntpos] = new TH1D(hposname,hpostitle,ch,0.,(double)ch);
 
         int cntbinhpos = 1; //parte da 1 e arriva a 1024 e serve a riempire i bin degli istogrammi in ordine
 
@@ -55,7 +51,6 @@ void ReadMCA () {
         
         while(getline(inputpos,line)) {
 
-            //if (checkstr(strin,string(line))) roi=true;
             if (checkstr(strfin,string(line))) data=true;
             else if (data) break;
             else continue;
@@ -63,23 +58,22 @@ void ReadMCA () {
         }
 
         while(inputpos>>fillhpos) {
-            hgamma[cntpos]->SetBinContent(cntbinhpos++,fillhpos); //legge i canali
+  	 hpos[cntpos]->SetBinContent(cntbinhpos++,fillhpos); //legge i canali
         }
 
-        if (cntbinhpos!=ch) {
-            cout<<" IL VERO NUMERO DI BIN POS E' "<<cntbinhpos<<endl;
-            return;
-        }
+       
 
         cntpos++;
+
     }
 
-    TFile *hfile = new TFile("day2.root","recreate");
+    TFile *hfile = new TFile("hmca.root","recreate");
 
-    for(int i=0;i<3;i++) {
-        hgamma[i]->Write();
+    for(int i=0;i<6;i++) {
+        hpos[i]->Write();
+ 
     }
-    
+    hfile->Close();
 }
 
 bool checkstr(string a, string b) {

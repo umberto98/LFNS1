@@ -12,10 +12,10 @@
 
 using namespace std;
 
-const float k =  1.41451;
-const float p = -2.18128e+01;
-const float kerr = 2.85896e-02;
-const float perr = 2.73651e+01; 
+const float k = 1.48908;
+const float p = -3.59961e+01;
+const float kerr = 4.81562e-02;
+const float perr = 3.29192e+01; 
 
 //FIXME Aggiungere dati a metaà grafico (canale 500)
 void regressione_errori()
@@ -32,11 +32,11 @@ void regressione_errori()
     };
 
     float dCHN[] = {
-	1.18654e+01, 1.97727e+01, 1.81102e+01, 2.02414e+01
+	1.19599e+01, 1.93096e+01, 1.91448e+01, 1.96829e+01
     };
 
     float dCHNerr[] = {
-    	2.60729e-02, 1.06612e-01, 2.54988e-01, 3.67709e-01
+    	2.75586e-02, 1.18067e-01, 2.41548e-01,  1.94724e-01
     };
     
     float Y[4];
