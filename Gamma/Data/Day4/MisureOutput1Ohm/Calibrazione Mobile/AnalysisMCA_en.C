@@ -14,7 +14,7 @@ const bool drawh = true; //metti true se vuoi 20 canvas di istogrammi con relati
 //INIZIO MAIN
 //-----------
 
-void AnalysisMCA () {
+void AnalysisMCA_en () {
 
     TFile *hfile = new TFile("day2conv.root");
 
@@ -130,8 +130,8 @@ hgamma[1]->Fit(f1,"RM+");
 	//g[3]->SetLineWidth(2);
 	//g[3]->Draw("same");
 
-	cout<<"Massa elettrone: "<< 2*511*(511-f->GetParameter(4))/(f->GetParameter(4)) << endl;
-    	cout<<"Errore: " << 2*511*511/(f->GetParameter(4)*f->GetParameter(4))*f->GetParError(4)<<endl;
+	cout<<"Massa elettrone: "<< 2*511*(511-f1->GetParameter(1))/(f1->GetParameter(1)) << endl;
+    	cout<<"Errore: " << 2*511*511/(f1->GetParameter(1)*f1->GetParameter(1))*f->GetParError(1)<<endl;
     }
     
 

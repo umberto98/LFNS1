@@ -52,14 +52,15 @@ void AnalysisMCA () {
 	hgamma[1]->Draw("e1");
 
 	///Background sigmoide
-	//TF1* f = new TF1("func","gaus(0)+[6]/(1+ TMath::Exp((x-[3])/[4]))+[5]",320,440);
-	//TF1* f1 = new TF1("func1","gaus(0)+[6]/(1+ TMath::Exp((x-[3])/[4]))+[5]",840,980);
+	TF1* f = new TF1("func","gaus(0)+[3]*x*x*x+[4]*x*x+[5]*x+[6]",300,440);
+	//TF1* f1 = new TF1("func1","gaus(0)+[6]/(1+ TMath::Exp((x-[3])/[4]))+[5]",840,98);
 
 	//Background retta
-	TF1* f = new TF1("func","gaus(0)+[3]*x+[4]",300,440);
-	TF1* f1 = new TF1("func1","gaus(0)+[3]*x+[4]",840,980);
+	//TF1* f = new TF1("func","gaus(0)+[3]*x+[4]",300,450);
+	TF1* f1 = new TF1("func1","gaus(0)+[3]*x*x*x+[4]*x*x+[5]*x+[6]",840,991);
 	
-	//f->SetParNames("Norm_{1}","#mu_{1}","#sigma_{1}","Norm_{2}","#mu_{2}","#sigma_{2}");
+	f->SetParNames("Norm_{1}","#mu_{1}","#sigma_{1}","a","b","c","d");
+	f1->SetParNames("Norm_{2}","#mu_{2}","#sigma_{2}","a","b","c","d");
 	// Set mameningful initial parameters
 
 	//Parametri retta
@@ -69,48 +70,51 @@ void AnalysisMCA () {
 	f->SetParLimits (1,350,400);
 	f->SetParameter (2,10);
 	f->SetParLimits (2,5,15);
-	f->SetParameter (3,-350);
-	//f->SetParLimits (3,300,400);
-	f->SetParameter (4,100);
-	//f->SetParLimits (4,0,10000);
-	
+	f->SetParameter (3,350);
+	//f->SetParLimits (3,300,500);
+	f->SetParameter (4,350);
+	//f->SetParLimits (4,340,420);
+	f->SetParameter (5,0);
+
 	f1->SetParameter (0,2100);
+	f1->SetParLimits (0,0,5000);
 	f1->SetParameter (1,877);
 	f1->SetParLimits (1,820,920);
 	f1->SetParameter (2,15);
 	f1->SetParLimits (2,5,30);
-	f1->SetParameter (3,-850);
+	f1->SetParameter (3,0);
+	f1->SetParLimits (3,0,1);
 	f1->SetParameter (4,10);
-	//f1->SetParLimits (4,7,100);
+	f1->SetParLimits (4,-1,1);
 
 	//Parametri aggiuntivi sigmoide
 	//f->SetParameter (5,100);
 	//f->SetParLimits (5,100,160);
-	//f->SetParameter (6,150);
+	f->SetParameter (6,0);
 	//f->SetParLimits (6,100,300);
 	
-	//f1->SetParameter (5,10);
-	//f1->SetParLimits (5,0,25);
-	//f1->SetParameter (6,20);
-	//f1->SetParLimits (6,0,100);
-
+	f1->SetParameter (5,10);
+	f1->SetParLimits (5,-10,10);
+	f1->SetParameter (6,20);
+	//f1->SetParLimits (6,700,1000);
+	
 	///Fit
-	hgamma[1]->Fit(f,"RM+");
+	hgamma[1]->Fit(f,"ERM+");
 	canv[0]->Update();
-	hgamma[1]->Fit(f1,"RM+");
+	hgamma[1]->Fit(f1,"ERM+");
 	
 	// Draw individual peaks separately, using the parameters from the fit
 	TF1* g[4];
 	g[0] = new TF1("g0", "gaus", 290,430);
 	g[0]->SetLineColor(kMagenta);
-	g[1] = new TF1("g1", "gaus + [3]", 780,990);
+	g[1] = new TF1("g1", "gaus", 840,980);
 	g[1]->SetLineColor(kBlue);
 	//sigmoide
-	//g[2] = new TF1("g2", "[3]/(1+ TMath::Exp((x-[0])/[1]))+[2]", 290,430);
-	//g[3] = new TF1("g3", "[3]/(1+ TMath::Exp((x-[0])/[1]))+[2]", 780,960);
+	g[2] = new TF1("g2", "[0]*x*x*x+[1]*x*x+[2]*x+[3]", 300,440);
+	g[3] = new TF1("g3", "[0]*x*x*x+[1]*x*x+[2]*x+[3]", 840,991);
 	//retta
-	g[2] = new TF1("g2", "[0]*x+[1]", 290,430);
-	g[3] = new TF1("g2", "[0]*x+[1]", 780,960);	
+	//g[2] = new TF1("g2", "[0]*x+[1]", 290,430);
+	//g[3] = new TF1("g2", "[0]*x+[1]", 780,960);	
 	g[2]->SetLineColor(kGreen);	
 	g[3]->SetLineColor(kGreen);
 
@@ -121,21 +125,21 @@ void AnalysisMCA () {
 	  g[1]->SetParameter(j,f1->GetParameter(j));
 	}
 	//Sigmoide
-	for (int j=3; j<7; ++j) {
-	  //g[2]->SetParameter(j-3,f->GetParameter(j));
-	  //g[3]->SetParameter(j-3,f1->GetParameter(j));
-	}
-	//retta
-	for (int j=3; j<5; ++j) {
+	for (int j=3; j<8; ++j) {
 	  g[2]->SetParameter(j-3,f->GetParameter(j));
 	  g[3]->SetParameter(j-3,f1->GetParameter(j));
 	}
+	//retta
+	for (int j=3; j<5; ++j) {
+	  //g[2]->SetParameter(j-3,f->GetParameter(j));
+	  //g[3]->SetParameter(j-3,f1->GetParameter(j));
+	}
 	g[0]->SetLineWidth(2);
-	g[0]->Draw("same");
+	//g[0]->Draw("same");
 	g[2]->SetLineWidth(2);
 	g[2]->Draw("same");
 	g[1]->SetLineWidth(2);
-	g[1]->Draw("same");
+	//g[1]->Draw("same");
 	g[3]->SetLineWidth(2);
 	g[3]->Draw("same");
 
@@ -154,9 +158,10 @@ void AnalysisMCA () {
 	//TF1* C = new TF1("funcC","gaus(0)+[6]/(1+ TMath::Exp((x-[3])/[4]))+[5]",320,440);
 
 	//Background retta
-	//TF1* C = new TF1("funcC","gaus(0)+gaus(3)+[6]/(1+ TMath::Exp((x-[7])/[8]))+[9]",700,1000);
-	TF1* C = new TF1("funcC","gaus(0)+gaus(3)+[6]*TMath::Erfc((x-[7])/[8])+[9]+[10]*TMath::Erfc((x-[11])/[12])",600,1000);
-	//f->SetParNames("Norm_{1}","#mu_{1}","#sigma_{1}","Norm_{2}","#mu_{2}","#sigma_{2}");
+	//TF1* C = new TF1("funcC","gaus(0)+gaus(3)+[6]/(1+ TMath::Exp((x-[7])/[8]))+[9]",720,1000);
+	//TF1* C = new TF1("funcC","gaus(0)+gaus(3)+[6]*TMath::Erfc((x-[7])/[8])+[9]+[10]*TMath::Erfc((x-[11])/[12])",600,1000);
+	TF1* C = new TF1("funcC","gaus(0)+gaus(3)+[6]*TMath::Erfc((x-[7])/[8])+[9]",740,1000);
+	C->SetParNames("Norm_{1}","#mu_{1}","#sigma_{1}","Norm_{2}","#mu_{2}","#sigma_{2}","Norm_{3}","E_{c}","#sigma_{3}","c");
 	// Set mameningful initial parameters
 
 	//Parametri retta
@@ -175,19 +180,19 @@ void AnalysisMCA () {
 	C->SetParameter (6,30);
 	C->SetParLimits (6,10,35);
 	C->SetParameter (7,780);
-	C->SetParLimits (7,700,800);
+	C->SetParLimits (7,700,900);
 	//Parametri aggiuntivi sigmoide
 	C->SetParameter (8,10);
-	C->SetParLimits (8,10,50);
+	//C->SetParLimits (8,10,50);
 	C->SetParameter (9,5);
 	C->SetParLimits (9,0,10);
-	C->SetParameter (10,60);
-	C->SetParLimits (10,10,50);
-	C->SetParameter (11,780);
-	C->SetParLimits (11,600,750);
+	//C->SetParameter (10,60);
+	//C->SetParLimits (10,10,50);
+	//C->SetParameter (11,780);
+	//C->SetParLimits (11,600,750);
 	//Parametri aggiuntivi sigmoide
-	C->SetParameter (12,10);
-	C->SetParLimits (12,0,70);
+	//C->SetParameter (12,10);
+	//C->SetParLimits (12,0,70);
 
 	///Fit
 	hgamma[0]->Fit(C,"RM+");
@@ -200,7 +205,7 @@ void AnalysisMCA () {
 	c[1] = new TF1("c1", "gaus", 630,1000);
 	c[1]->SetLineColor(kBlue);
 	//sigmoide
-	c[2] = new TF1("c2", "[0]*TMath::Erfc((x-[1])/[2])+[3]", 630,1000);	
+	c[2] = new TF1("c2", "[0]*TMath::Erfc((x-[1])/[2])+[3]", 740,1000);	
 	c[2]->SetLineColor(kGreen);
 	c[3] = new TF1("c2", "[0]*TMath::Erfc((x-[1])/[2])", 630,1000);	
 	c[3]->SetLineColor(kOrange);
@@ -216,17 +221,17 @@ void AnalysisMCA () {
 	//retta
 	for (int j=6; j<9; ++j) {
 	  c[2]->SetParameter(j-6,C->GetParameter(j));
-	  c[3]->SetParameter(j-6,C->GetParameter(j+4));
+	  //c[3]->SetParameter(j-6,C->GetParameter(j+4));
 	}
 	c[2]->SetParameter(3,C->GetParameter(9));
 	c[0]->SetLineWidth(2);
-	c[0]->Draw("same");
+	//c[0]->Draw("same");
 	c[2]->SetLineWidth(2);
 	c[2]->Draw("same");
 	c[1]->SetLineWidth(2);
-	c[1]->Draw("same");
+	//c[1]->Draw("same");
 	c[3]->SetLineWidth(2);
-	c[3]->Draw("same");
+	//c[3]->Draw("same");
 	
     }
     

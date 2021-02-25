@@ -7,7 +7,7 @@
 #include "TStyle.h"
 #include "TMath.h"
 
-const double sig = 60.; //supponiamo che il segnale sia circa 20 intorno al valore massimo
+const double sig = 30.; //supponiamo che il segnale sia circa 20 intorno al valore massimo
 const bool drawh = true; //metti true se vuoi 20 canvas di istogrammi con relativo fit
 
 double calcmean (TH1D *h1, double a, double b);
@@ -87,7 +87,7 @@ void AnalysisMCA () {
             int binmax = hpos[cntpos]->GetMaximumBin();
             double maxch = hpos[cntpos]->GetBinCenter(binmax);
             double centr = calcmean(hpos[cntpos],maxch-sig/2.,maxch+sig/2.);
-
+	    double consta = hpos[cntpos]->Integral(binmax-sig/2.,binmax+sig/2.);
             mean.push_back(centr);
 
             //-----------
@@ -95,7 +95,9 @@ void AnalysisMCA () {
             //-----------
 
             sprintf(fitname,"f_%d",cntf);
-            farray[cntf] = new TF1(fitname,"gaus",maxch-sig/2.,maxch+sig/2.); //range di fit con gaus
+            farray[cntf] = new TF1(fitname,"gaus(0)+gaus(3)",maxch-sig/2.,maxch+sig/2.); //range di fit con gaus
+	    farray[cntf]->SetParameters(consta,maxch,sig/2.,consta/10.,maxch-sig/2.,sig/2.);
+	    farray[cntf]->SetParLimits(4,500,maxch-sig/8.);
             hpos[cntpos]->Fit(fitname,"RQ0");
             //rms.push_back(hpos[cntpos]->GetStdDev()/centr);
             cout<<" Sigma "<<2.355*farray[cntf]->GetParameter("Sigma")<<" e Centroide: "<<centr<<" @ HV = "<<i<<endl;

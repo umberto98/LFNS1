@@ -5,10 +5,10 @@
 const string strin = "<<ROI>>"; //skip dall'inizio a <<ROI>>
 const string strfin = "<<DATA>>"; //e da <<ROI>> fino a <<DATA>>
 const float ch = 1024.; //numero canali MCA 
-const float k = 1.41451;
-const float p = -2.18128e+01;
-const float kerr = 2.85896e-02;
-const float perr = 2.73651e+01;
+const float k =  1.41294e+00;
+const float p = -2.12153e+01;
+const float kerr = 4.36816e-02;
+const float perr = 3.09738e+01; 
 
 float conversion(float ch){return (p+k*ch);}
 bool checkstr(string a, string b); //fa un check su due stringhe

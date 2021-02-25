@@ -12,10 +12,10 @@
 
 using namespace std;
 
-const float k =  1.41451;
-const float p = -2.18128e+01;
-const float kerr = 2.85896e-02;
-const float perr = 2.73651e+01; 
+const float k =  1.41294e+00;
+const float p = -2.12153e+01;
+const float kerr = 4.36816e-02;
+const float perr = 3.09738e+01; 
 
 //FIXME Aggiungere dati a metaà grafico (canale 500)
 void regressione_errori()
@@ -24,7 +24,7 @@ void regressione_errori()
 
 	
     float E[] = {
-	511, 1275, 1173.2, 1332.5
+	511, 1274.6, 1173.2, 1332.5
     };
 
     float sE[] = {
@@ -32,11 +32,11 @@ void regressione_errori()
     };
 
     float dCHN[] = {
-	1.18654e+01, 1.97727e+01, 1.81102e+01, 2.02414e+01
+	1.19917e+01, 1.98323e+01, 1.82133e+01, 2.02610e+01
     };
 
     float dCHNerr[] = {
-    	2.60729e-02, 1.06612e-01, 2.54988e-01, 3.67709e-01
+    	2.61544e-02, 9.62798e-02, 3.80101e-01, 3.75019e-01
     };
     
     float Y[4];
@@ -58,10 +58,10 @@ void regressione_errori()
     graph->SetMarkerSize(0);
     graph->SetMarkerStyle(1);
     // Titolo del grafico
-    graph->SetTitle("R(E)");
+    graph->SetTitle("Risoluzione in funzione dell'energia");
     // Titoli degli assi
-    graph->GetXaxis()->SetTitle("E");
-    graph->GetYaxis()->SetTitle("R");
+    graph->GetXaxis()->SetTitle("E(KeV)");
+    graph->GetYaxis()->SetTitle("#Delta E/E");
     gPad->SetLeftMargin(0.15);
     // graph->SetMinimum(0);
     graph->GetXaxis()->SetLimits(0, 1400);
@@ -73,7 +73,7 @@ void regressione_errori()
 
 
     TF1 *funz1 = new TF1("funz1","[0]/(x)^0.5 + [1]", 0, 1400);
-    funz1->SetParNames("k", "p");
+    funz1->SetParNames("a", "b");
     cout << "\n\n --- Ipotesi:  " << funz1->GetTitle() << "  ---\n" << endl;
     funz1->SetLineColor(4);
     graph->Fit("funz1","RM+");

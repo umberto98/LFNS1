@@ -47,7 +47,7 @@ void AnalysisMCA () {
 
     for(int i=0;i<=10;i=i+2) {
 
-       	hv.push_back(i); //hv salta 0V
+       	hv.push_back(i*0.1); //hv salta 0V
 	hverr.push_back(1e-7);
             //---------
             //CENTROIDE 
@@ -92,17 +92,18 @@ void AnalysisMCA () {
     cout<<" Indice di Ris. Max.: "<<minindex<<endl;
     cout<<" Risoluzione Massima "<<rms[minindex]<<" @ HV WORK = "<<hv[minindex]<<endl;
 
+    //TGraphErrors *gmean = new TGraphErrors(6, &hv[0],&mean[0], &hverr[0], &rms[0]);
     TGraphErrors *gmean = new TGraphErrors(6, &mean[0],&hv[0], &rms[0], &hverr[0]);
     //TGraph *gmean = new TGraph(6,&hv[0],&mean[0]);
-    gmean->SetTitle(" CENTROIDE vs DELAY ");
-    gmean->GetXaxis()->SetTitle(" HV [V] ");
-    gmean->GetYaxis()->SetTitle(" CENTROIDE [CH] ");
+    gmean->SetTitle(" Retta di calibrazione TAC ");
+    gmean->GetYaxis()->SetTitle("  #DeltaT(#mus) ");
+    gmean->GetXaxis()->SetTitle(" #mu [CH] ");
     gmean->SetMarkerSize(0);
     gmean->SetMarkerStyle(1);
-    gmean->GetXaxis()->SetLimits(0, 1024);
+    gmean->GetXaxis()->SetLimits(-0.1, 1.2);
     gmean->SetMarkerColor(kRed);
 
-    TF1 *funz1 = new TF1("funz1","[0]*x + [1]", 0, 1024);
+    TF1 *funz1 = new TF1("funz1","[0]*x + [1]", -0.1, 1024);
     funz1->SetParNames("k", "p");
     cout << "\n\n --- Ipotesi:  " << funz1->GetTitle() << "  ---\n" << endl;
     funz1->SetLineColor(4);
@@ -112,12 +113,12 @@ void AnalysisMCA () {
 
     TGraphErrors *grms = new TGraphErrors(6, &hv[0], &rms[0], &hverr[0], &rmserr[0]);
     //TGraph *grms = new TGraph(6,&hv[0],&rms[0]);
-    grms->SetTitle(" RISOLUZIONE RELATIVA vs HV ");
-    grms->GetXaxis()->SetTitle(" HV [V] ");
-    grms->GetYaxis()->SetTitle(" RISOLUZIONE ns");
+    grms->SetTitle("Risoluzione in funzione del tempo");
+    grms->GetXaxis()->SetTitle(" #DeltaT[#mus] ");
+    grms->GetYaxis()->SetTitle("#sigma_{t}");
     grms->SetMarkerStyle(20);
     grms->SetMarkerSize(0.9);
-    grms->GetXaxis()->SetLimits(-0.5, 14);
+    grms->GetXaxis()->SetLimits(-0.5, 1.4);
     grms->SetMarkerColor(kBlue);
 
     TCanvas *c2 = new TCanvas();

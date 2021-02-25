@@ -5,10 +5,10 @@
 const string strin = "<<ROI>>"; //skip dall'inizio a <<ROI>>
 const string strfin = "<<DATA>>"; //e da <<ROI>> fino a <<DATA>>
 const float ch = 1024.; //numero canali MCA 
-const float k = 1.48908;
-const float p = -3.59961e+01;
-const float kerr = 4.81562e-02;
-const float perr = 3.29192e+01;
+const float k =  1.41294e+00;
+const float p = -2.12153e+01;
+const float kerr = 4.36816e-02;
+const float perr = 3.09738e+01;  
 
 float conversion(float ch){return (p+k*ch);}
 bool checkstr(string a, string b); //fa un check su due stringhe
@@ -18,19 +18,17 @@ void ReadMCAEnergy () {
     char filepos[50]; //nome del file di quelli a tensioni positive
     char fileneg[50]; //nome del file di quelli a tensioni negative
 
-    TH1D* hgamma[3]; //2 istogrammi dei gamma
+    TH1D* hgamma[2]; //2 istogrammi dei gamma
 
     char hposname[50]; //nome degli istogrammi positivi
     char hpostitle[50]; //titolo degli istogrammi positivi
 
     int cntpos = 0; //contatore da 0 a 9 per riempire l'array di istogrammi
 
-    for(int i=0;i<=2;i++) {
+    for(int i=0;i<=1;i++) {
 
-        if (i==0) sprintf(filepos,"SpettroCoConDelayFisso.mca");
-	if (i==1) sprintf(filepos,"SpettroNaDelayFisso.mca");
-	if (i==2) sprintf(filepos,"SpettroNaSenzaDelayFisso.mca");
-
+        if (i==0) sprintf(filepos,"Na60conPb.mca");
+	if (i==1) sprintf(filepos,"Na60noPb.mca");
         ifstream inputpos(filepos);
 
         if (!inputpos) {
@@ -39,9 +37,8 @@ void ReadMCAEnergy () {
         }
 
         sprintf(hposname,"hday1_%d",cntpos);
-        if (i==0) sprintf(hpostitle," SPETTRO MCA Co - Mobile");
-	if (i==1) sprintf(hpostitle," SPETTRO MCA Na - Mobile");
-	if (i==2) sprintf(hpostitle," SPETTRO MCA Na - Fisso - No Delay");
+        if (i==0) sprintf(hpostitle," SPETTRO MCA Na - Mobile - con Pb");
+	if (i==1) sprintf(hpostitle," SPETTRO MCA Na - Mobile - senza Pb");
 
         hgamma[cntpos] = new TH1D(hposname,hpostitle,ch-1,conversion(0.),conversion(ch));
 
@@ -81,9 +78,9 @@ void ReadMCAEnergy () {
         cntpos++;
     }
 
-    TFile *hfile = new TFile("day2conv.root","recreate");
+    TFile *hfile = new TFile("day1conv.root","recreate");
 
-    for(int i=0;i<3;i++) {
+    for(int i=0;i<2;i++) {
         hgamma[i]->Write();
     }
     

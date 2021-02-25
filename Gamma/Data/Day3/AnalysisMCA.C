@@ -16,7 +16,7 @@ const bool drawh = true; //metti true se vuoi 20 canvas di istogrammi con relati
 
 void AnalysisMCA () {
 
-    TFile *hfile = new TFile("day1.root");
+    TFile *hfile = new TFile("day1conv.root");
 
     TH1D* hgamma[2]; //2 istogrammi a tensioni
 
@@ -40,14 +40,14 @@ void AnalysisMCA () {
 
     
     if (drawh) {
-        TCanvas *c[2]; 
+        TCanvas *c[3]; 
         for(int i=0;i<2;i++) {
 		c[i] = new TCanvas();
     		hgamma[i]->SetMarkerStyle(21);
    		hgamma[i]->SetMarkerSize(0.7);
     		hgamma[i]->GetXaxis()->SetTitle("E [A.U.]");
     		hgamma[i]->GetYaxis()->SetTitle("Counts");
-    		hgamma[i]->Draw("e1");
+    		hgamma[i]->Draw("histo");
 		//TF1* backdx = new TF1("func","[0]",420,580);
 		//backdx->SetParameter (0,120);
 		//hgamma[i]->Fit(backdx,"RM+");
@@ -81,9 +81,9 @@ void AnalysisMCA () {
 		f1->SetParLimits (5,0,25);
 		f1->SetParameter (6,20);
 		f1->SetParLimits (6,0,50);
-  		hgamma[i]->Fit(f,"RM+");
+  		//hgamma[i]->Fit(f,"RM+");
 		c[i]->Update();
-		hgamma[i]->Fit(f1,"RM+");
+		//hgamma[i]->Fit(f1,"RM+");
 		
   		// Draw individual peaks separately, using the parameters from the fit
   		TF1* g[4];
@@ -105,18 +105,24 @@ void AnalysisMCA () {
 			g[3]->SetParameter(j-3,f1->GetParameter(j));
     		}
     		g[0]->SetLineWidth(2);
-    		g[0]->Draw("same");
+    		//g[0]->Draw("same");
 		g[2]->SetLineWidth(2);
-    		g[2]->Draw("same");
+    		//g[2]->Draw("same");
 		g[1]->SetLineWidth(2);
-    		g[1]->Draw("same");
+    		//g[1]->Draw("same");
 		g[3]->SetLineWidth(2);
-    		g[3]->Draw("same");
+    		//g[3]->Draw("same");
 
   		
   		//f->Draw("same");
 		//f1->Draw("same");
+
         }
+		c[2] = new TCanvas();
+		hgamma[0]->SetLineColor(kRed);
+		hgamma[0]->Draw("histo");
+		hgamma[1]->SetLineColor(kBlue);
+		hgamma[1]->Draw("histosame");
     }
 
 }

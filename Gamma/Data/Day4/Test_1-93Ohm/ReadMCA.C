@@ -4,16 +4,11 @@
 
 const string strin = "<<ROI>>"; //skip dall'inizio a <<ROI>>
 const string strfin = "<<DATA>>"; //e da <<ROI>> fino a <<DATA>>
-const float ch = 1024.; //numero canali MCA 
-const float k = 1.48908;
-const float p = -3.59961e+01;
-const float kerr = 4.81562e-02;
-const float perr = 3.29192e+01;
+const int ch = 1024; //numero canali MCA 
 
-float conversion(float ch){return (p+k*ch);}
 bool checkstr(string a, string b); //fa un check su due stringhe
 
-void ReadMCAEnergy () {
+void ReadMCA () {
 
     char filepos[50]; //nome del file di quelli a tensioni positive
     char fileneg[50]; //nome del file di quelli a tensioni negative
@@ -25,12 +20,11 @@ void ReadMCAEnergy () {
 
     int cntpos = 0; //contatore da 0 a 9 per riempire l'array di istogrammi
 
-    for(int i=0;i<=2;i++) {
+    for(int i=0;i<=1;i++) {
 
-        if (i==0) sprintf(filepos,"SpettroCoConDelayFisso.mca");
-	if (i==1) sprintf(filepos,"SpettroNaDelayFisso.mca");
+        if (i==0) sprintf(filepos,"TestNa1OhmMobile.mca");
+	if (i==1) sprintf(filepos,"TestNa93OhmMobile.mca");
 	if (i==2) sprintf(filepos,"SpettroNaSenzaDelayFisso.mca");
-
         ifstream inputpos(filepos);
 
         if (!inputpos) {
@@ -39,11 +33,11 @@ void ReadMCAEnergy () {
         }
 
         sprintf(hposname,"hday1_%d",cntpos);
-        if (i==0) sprintf(hpostitle," SPETTRO MCA Co - Mobile");
-	if (i==1) sprintf(hpostitle," SPETTRO MCA Na - Mobile");
+        if (i==0) sprintf(hpostitle," SPETTRO MCA Na - 1Ohm");
+	if (i==1) sprintf(hpostitle," SPETTRO MCA Na - 93Ohm");
 	if (i==2) sprintf(hpostitle," SPETTRO MCA Na - Fisso - No Delay");
-
-        hgamma[cntpos] = new TH1D(hposname,hpostitle,ch-1,conversion(0.),conversion(ch));
+	
+        hgamma[cntpos] = new TH1D(hposname,hpostitle,ch,0.,(double)ch);
 
         int cntbinhpos = 1; //parte da 1 e arriva a 1024 e serve a riempire i bin degli istogrammi in ordine
 
@@ -70,7 +64,6 @@ void ReadMCAEnergy () {
 
         while(inputpos>>fillhpos) {
             hgamma[cntpos]->SetBinContent(cntbinhpos++,fillhpos); //legge i canali
-	    //hgamma[cntpos]->Fill(conversion(cntbinhpos++),fillhpos);
         }
 
         if (cntbinhpos!=ch) {
@@ -81,9 +74,9 @@ void ReadMCAEnergy () {
         cntpos++;
     }
 
-    TFile *hfile = new TFile("day2conv.root","recreate");
+    TFile *hfile = new TFile("day2.root","recreate");
 
-    for(int i=0;i<3;i++) {
+    for(int i=0;i<2;i++) {
         hgamma[i]->Write();
     }
     

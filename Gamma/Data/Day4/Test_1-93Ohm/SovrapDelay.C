@@ -26,11 +26,11 @@ void SovrapDelay () {
     char fitname[50];
     int cntf = 0; //contatore per fit
 
-    for(int i=1;i<3;i++) {
-        if (i==1) sprintf(hposname,"hday1_%d",i);
-	if (i==2) sprintf(hposname,"hday1_%d",i);
+    for(int i=0;i<2;i++) {
+        if (i==0) sprintf(hposname,"hday1_%d",i);
+	if (i==1) sprintf(hposname,"hday1_%d",i);
 	
-        hgamma[i-1] = (TH1D*)hfile->Get(hposname);
+        hgamma[i] = (TH1D*)hfile->Get(hposname);
     }
 
      //--------
@@ -42,7 +42,7 @@ void SovrapDelay () {
     
     if (drawh) {
 
-      /////////////////SODIO con delay//////////////////////////////////////
+      /////////////////SODIO con 1OHM//////////////////////////////////////
       TCanvas *canv[3]; 
       
 	canv[0] = new TCanvas();
@@ -54,18 +54,18 @@ void SovrapDelay () {
 
 	///Background sigmoide
 	//TF1* f = new TF1("func","gaus(0)+[6]/(1+ TMath::Exp((x-[3])/[4]))+[5]",320,440);
-	//TF1* f1 = new TF1("func1","gaus(0)+[6]/(1+ TMath::Exp((x-[3])/[4]))+[5]",800,960);
+	//TF1* f1 = new TF1("func1","gaus(0)+[6]/(1+ TMath::Exp((x-[3])/[4]))+[5]",800,970);
 
 	//Background retta
-	TF1* f = new TF1("func","gaus(0)+[3]*x+[4]",300,420);
-	TF1* f1 = new TF1("func1","gaus(0)+[3]*x+[4]",800,950);
+	TF1* f = new TF1("func","gaus(0)+[3]*x+[4]",320,440);
+	TF1* f1 = new TF1("func1","gaus(0)+[3]*x+[4]",830,920);
 	
 	//f->SetParNames("Norm_{1}","#mu_{1}","#sigma_{1}","Norm_{2}","#mu_{2}","#sigma_{2}");
 	// Set mameningful initial parameters
 
 	//Parametri retta
-	f->SetParameter (0,4250);
-	//f->SetParLimits (0,4000,4500);
+	f->SetParameter (0,1000);
+	f->SetParLimits (0,100,4000);
 	f->SetParameter(1,360);
 	f->SetParLimits (1,340,380);
 	f->SetParameter (2,10);
@@ -76,11 +76,11 @@ void SovrapDelay () {
 	//f->SetParLimits (4,0,10000);
 	
 	f1->SetParameter (0,1000);
-	f1->SetParLimits (0,100,3000);
+	f1->SetParLimits (0,50,150);
 	f1->SetParameter (1,877);
-	f1->SetParLimits (1,840,900);
+	f1->SetParLimits (1,900,940);
 	f1->SetParameter (2,15);
-	//f1->SetParLimits (2,5,30);
+	f1->SetParLimits (2,5,100);
 	f1->SetParameter (3,-850);
 	f1->SetParameter (4,10);
 	//f1->SetParLimits (4,7,100);
@@ -142,7 +142,7 @@ void SovrapDelay () {
 	g[3]->Draw("same");
 
 
-	/////////////////SODIO senza delay/////////////////////////////////////      
+	/////////////////SODIO con 93Ohm/////////////////////////////////////      
 	canv[1] = new TCanvas();
 	hgamma[1]->SetMarkerStyle(21);
 	hgamma[1]->SetMarkerSize(0.7);
@@ -155,17 +155,17 @@ void SovrapDelay () {
 	//TF1* c1 = new TF1("funcc1","gaus(0)+[6]/(1+ TMath::Exp((x-[3])/[4]))+[5]",800,960);
 
 	//Background retta
-	TF1* c = new TF1("funcc","gaus(0)+[3]*x+[4]",320,440);
-	TF1* c1 = new TF1("funcc1","gaus(0)+[3]*x+[4]",840,990);
+	TF1* c = new TF1("funcc","gaus(0)+[3]*x+[4]",290,410);
+	TF1* c1 = new TF1("funcc1","gaus(0)+[3]*x+[4]",800,950);
 	
 	//c->SetParNames("Norm_{1}","#mu_{1}","#sigma_{1}","Norm_{2}","#mu_{2}","#sigma_{2}");
 	// Set mameningful initial parameters
 
 	//Parametri retta
 	c->SetParameter (0,4250);
-	c->SetParLimits (0,4000,8000);
+	c->SetParLimits (0,800,2000);
 	c->SetParameter(1,380);
-	c->SetParLimits (1,320,440);
+	c->SetParLimits (1,340,470);
 	c->SetParameter (2,10);
 	c->SetParLimits (2,5,30);
 	c->SetParameter (3,-350);
@@ -174,9 +174,9 @@ void SovrapDelay () {
 	//c->SetParLimits (4,0,10000);
 	
 	c1->SetParameter (0,1000);
-	c1->SetParLimits (0,500,700);
+	c1->SetParLimits (0,0,300);
 	c1->SetParameter (1,920);
-	c1->SetParLimits (1,900,960);
+	c1->SetParLimits (1,860,880);
 	c1->SetParameter (2,15);
 	c1->SetParLimits (2,5,100);
 	c1->SetParameter (3,0);
@@ -253,14 +253,14 @@ void SovrapDelay () {
 
 	TF1* fit1[4];
 	//delay
-	fit1[0] = new TF1("gc0", "gaus(0)+[3]*x+[4]", 300,410);
+	fit1[0] = new TF1("gc0", "gaus(0)+[3]*x+[4]", 320,440);
 	fit1[0]->SetLineColor(kRed);
-	fit1[1] = new TF1("gc1", "gaus(0)+[3]*x+[4]", 800,960);
+	fit1[1] = new TF1("gc1", "gaus(0)+[3]*x+[4]", 840,980);
 	fit1[1]->SetLineColor(kRed);
 
 	//senza delay
-	fit1[2] = new TF1("gc2", "gaus(0)+[3]*x+[4]", 320,440);
-	fit1[3] = new TF1("gc2", "gaus(0)+[3]*x+[4]", 840,1000);	
+	fit1[2] = new TF1("gc2", "gaus(0)+[3]*x+[4]", 300,420);
+	fit1[3] = new TF1("gc2", "gaus(0)+[3]*x+[4]", 800,940);	
 	fit1[2]->SetLineColor(kGreen);	
 	fit1[3]->SetLineColor(kGreen);
 

@@ -24,7 +24,7 @@ void regressione_errori()
 
 	
     float E[] = {
-	511, 1275, 1173.2, 1332.5
+	511, 1274.6, 1173.2, 1332.5
     };
 
     float sE[] = {
@@ -32,11 +32,11 @@ void regressione_errori()
     };
 
     float dCHN[] = {
-	1.19599e+01, 1.93096e+01, 1.91448e+01, 1.96829e+01
+	1.18898e+01, 1.92605e+01,  1.69611e+01, 1.91595e+01
     };
 
     float dCHNerr[] = {
-    	2.75586e-02, 1.18067e-01, 2.41548e-01,  1.94724e-01
+    	 2.46502e-02,  1.16945e-01, 2.39357e-01,  2.10894e-01
     };
     
     float Y[4];
@@ -58,10 +58,10 @@ void regressione_errori()
     graph->SetMarkerSize(0);
     graph->SetMarkerStyle(1);
     // Titolo del grafico
-    graph->SetTitle("R(E)");
+    graph->SetTitle("Risoluzione in funzione dell'energia");
     // Titoli degli assi
-    graph->GetXaxis()->SetTitle("E");
-    graph->GetYaxis()->SetTitle("R");
+    graph->GetXaxis()->SetTitle("E(KeV)");
+    graph->GetYaxis()->SetTitle("#DeltaE/E");
     gPad->SetLeftMargin(0.15);
     // graph->SetMinimum(0);
     graph->GetXaxis()->SetLimits(0, 1400);
@@ -73,7 +73,7 @@ void regressione_errori()
 
 
     TF1 *funz1 = new TF1("funz1","[0]/(x)^0.5 + [1]", 0, 1400);
-    funz1->SetParNames("k", "p");
+    funz1->SetParNames("a", "b");
     cout << "\n\n --- Ipotesi:  " << funz1->GetTitle() << "  ---\n" << endl;
     funz1->SetLineColor(4);
     graph->Fit("funz1","RM+");

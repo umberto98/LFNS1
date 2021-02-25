@@ -17,15 +17,15 @@ void regressione_picchi()
     int n = 4;
 //canali
     float X[] = {
-        3.76556e+02, 9.17119e+02, 8.46185e+02, 9.57444e+02
+        3.76617e+02, 9.17052e+02, 8.46036e+02, 9.57441e+02
     };
 
     float sX[] = {
-      1.18654e+01, 1.97727e+01, 1.81102e+01, 2.87965e-01
+      1.19917e+01, 1.98323e+01, 1.82133e+01, 2.02610e+01
     };
 
     float Y[] = {
-      511, 1275, 1173.2, 1332.5
+      511, 1274.6, 1173.2, 1332.5
     };
 
     float sY[]{
@@ -48,7 +48,7 @@ void regressione_picchi()
     graph->SetTitle("E(CHN)");
     // Titoli degli assi
     graph->GetXaxis()->SetTitle("CHN");
-    graph->GetYaxis()->SetTitle("E (MeV)");
+    graph->GetYaxis()->SetTitle("E (KeV)");
     gPad->SetLeftMargin(0.15);
     // graph->SetMinimum(0);
     graph->GetXaxis()->SetLimits(0, 1024);
@@ -61,7 +61,7 @@ void regressione_picchi()
 
 
     TF1 *funz1 = new TF1("funz1","[0]*x + [1]", 0, 1024);
-    funz1->SetParNames("k", "p");
+    funz1->SetParNames("m", "q");
     cout << "\n\n --- Ipotesi:  " << funz1->GetTitle() << "  ---\n" << endl;
     funz1->SetLineColor(4);
     graph->Fit("funz1","RM+");
@@ -91,7 +91,7 @@ void regressione_picchi()
     // Titolo del grafico
     graph2->SetTitle("CHN(E)");
     // Titoli degli assi
-    graph2->GetXaxis()->SetTitle("E (MeV)");
+    graph2->GetXaxis()->SetTitle("E (KeV)");
     graph2->GetYaxis()->SetTitle("CHN");
     graph->SetMinimum(0);
     graph2->GetXaxis()->SetLimits(0., 1400);
@@ -104,7 +104,7 @@ void regressione_picchi()
 
 
     TF1 *funz2 = new TF1("funz1","[0]*x + [1]", 0., 1400);
-    funz2->SetParNames("m", "q");
+    funz2->SetParNames("k", "p");
     cout << "\n\n --- Ipotesi:  " << funz2->GetTitle() << "  ---\n" << endl;
     funz2->SetLineColor(4);
     graph2->Fit("funz1","RM+");

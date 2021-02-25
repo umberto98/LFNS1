@@ -8,7 +8,8 @@ const int ch = 1024; //numero canali MCA
 const float k = 1.48908;
 const float p = -3.59961e+01;
 const float kerr = 4.81562e-02;
-const float perr = 3.29192e+01;
+const float perr = 3.29192e+01; 
+
 
 float conversion(int ch){return k*ch+p;}
 bool checkstr(string a, string b); //fa un check su due stringhe
