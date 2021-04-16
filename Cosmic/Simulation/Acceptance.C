@@ -1,3 +1,4 @@
+//Simulation of Acceptance of detector
 #include "Riostream.h"
 #include "TMath.h"
 #include "TRandom3.h"
