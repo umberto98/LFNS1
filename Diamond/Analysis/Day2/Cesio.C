@@ -7,8 +7,8 @@
 #include "TLatex.h"
 
 //CALIBRAZIONE
-double calibr = 0.003296; //da moltiplicare nei canali
-double offset = -0.003978; //MeV
+double calibr = 0.003289; //da moltiplicare nei canali
+double offset = 0.007863;
 const double gain = 1000.;
 const double gaincal = 200.;
 
@@ -60,23 +60,21 @@ void Cesio () {
     char betatitle[50];
     sprintf(betatitle,"pol%d",polgrade);
 
-    //fitta con 7 e da 0.07 a 0.48 e con crossing a 0
-
-    TF1 *fitbeta = new TF1("fitbeta",betatitle,0.07,0.47);
+    TF1 *fitbeta = new TF1("fitbeta",betatitle,0.07,0.5);
     TF1 *fitkshell = new TF1("fitkshell","crystalball",0.50,0.63);
     TF1 *fitlshell = new TF1("fitlshell","gaus",0.63,0.68);
 
     fitkshell->SetParameters(271,0.61,0.012,1.6,0.22);
 
     char ftitle[50];
-    sprintf(ftitle,"crystalball(0) + pol%d(5) + gaus(%d)",polgrade,polgrade+6);
+    sprintf(ftitle,"crystalball(0) + pol%d(5)",polgrade);
     TF1 *fittotl = new TF1("fittotl",ftitle,0.07,0.55);
     sprintf(ftitle,"crystalball(0)+gaus(5)");
-    TF1 *fittotr = new TF1("fittotr",ftitle,0.52,0.8);
+    TF1 *fittotr = new TF1("fittotr",ftitle,0.54,0.67);
 
     TF1 *beta = new TF1("beta",betatitle,0.07,0.8); //prolungamento analitico beta
-    TF1 *kshell = new TF1("kshell","gaus",0.5,0.7); //prolungamento analitico kshell
-    TF1 *lshell = new TF1("lshell","gaus",0.5,0.7); //prolungamento analitico kshell
+    TF1 *kshell = new TF1("kshell","crystalball",0.54,0.7); //prolungamento analitico kshell
+    TF1 *lshell = new TF1("lshell","gaus",0.6,0.7); //prolungamento analitico kshell
 
     beta->SetTitle(" Spettro #beta^{-} ");
     kshell->SetTitle(" K-Shell ");
@@ -93,45 +91,49 @@ void Cesio () {
     fittotl->SetLineColor(kViolet);
     fittotr->SetLineColor(kRed);
 
+    fitbeta->SetTitle(" Spettro #beta^{-} ");
+    fittotr->SetTitle(" K-Shell + L-Shell ");
+
     gStyle->SetOptStat(0);
     gStyle->SetOptFit(1111);
 
-    TCanvas *c1 = new TCanvas();
-    hbeta->Draw("E1");
-    hbeta->Fit(fitbeta,"R");
-
-    TCanvas *c2 = new TCanvas();
-    hkshell->Draw("E1");
+    hbeta->Fit(fitbeta,"R0");
     hkshell->Fit(fitkshell,"R");
+    hlshell->Fit(fitlshell,"R0");
 
-    TCanvas *c3 = new TCanvas();
-    hlshell->Draw("E1");
-    hlshell->Fit(fitlshell,"R");
+    TCanvas *c1 = new TCanvas();
+    hnew->Draw("E1");
 
     for(int i=0;i<5;i++) fittotl->SetParameter(i,fitkshell->GetParameter(i));
     for(int i=0;i<=polgrade;i++) fittotl->SetParameter(i+5,fitbeta->GetParameter(i));
-    for(int i=0;i<3;i++) fittotl->SetParameter(i+polgrade+6,fitlshell->GetParameter(i));
+
+    for(int i=0;i<5;i++) fittotl->SetParLimits(i,fitkshell->GetParameter(i)-0.1*fitkshell->GetParameter(i),fitkshell->GetParameter(i)+0.1*fitkshell->GetParameter(i));
+    for(int i=0;i<=polgrade;i++) fittotl->SetParLimits(i+5,fitbeta->GetParameter(i)-0.1*fitbeta->GetParameter(i),fitbeta->GetParameter(i)+0.1*fitbeta->GetParameter(i));
 
     for(int i=0;i<5;i++) fittotr->SetParameter(i,fitkshell->GetParameter(i));
-    //for(int i=0;i<=polgrade;i++) fittotr->SetParameter(i+5,fitbeta->GetParameter(i));
     for(int i=0;i<3;i++) fittotr->SetParameter(i+5,fitlshell->GetParameter(i));
 
-    TCanvas *c4 = new TCanvas();
-    hnew->Draw("E1");
-    hnew->Fit(fittotl,"R+");
-    c4->Update();
-    hnew->Fit(fittotr,"R+");
+    hnew->Fit(fittotl,"R0");
+    hnew->Fit(fittotr,"R0");
 
-    for(int i=0;i<=polgrade;i++) {beta->FixParameter(i,fitbeta->GetParameter(i));}
-    for(int i=0;i<3;i++) {
-        kshell->FixParameter(i,fitkshell->GetParameter(i));
-        lshell->FixParameter(i,fitlshell->GetParameter(i));
-    }
+    for(int i=0;i<=polgrade;i++) beta->FixParameter(i,fitbeta->GetParameter(i));
+    for(int i=0;i<5;i++) kshell->FixParameter(i,fittotr->GetParameter(i));
+    for(int i=0;i<3;i++) lshell->FixParameter(i,fittotr->GetParameter(i+5));
 
-    double Qval;
+    TCanvas *c5 = new TCanvas();
+    hnew->DrawCopy("E1");
+    fittotr->Draw("same");
+    kshell->Draw("same");
+    lshell->Draw("same");
+    c5->BuildLegend();
 
-    Qval = beta->GetX(0,0.5,0.55,1e-10);
-    cout<<" \n --------------------------- \n Q-VALUE \n --------------------------- \n Q-VALUE = "<<Qval<<" MeV \n ";
+    double Qval = beta->GetX(0,0.5,0.55,1e-10);
+    
+    cout<<" \n --------------------------- \n Q-VALUE \n --------------------------- \n Q-VALUE = "<<Qval<<" MeV \n Q-VALUE-EXP = 0.514 MeV \n Z = ? \n";
+
+    cout<<" \n --------------------------- \n K-SHELL \n --------------------------- \n K-SHELL = ( "<<fittotr->GetParameter(1)<<" +- "<<fittotr->GetParameter(2)<<" ) MeV \n K-SHELL-EXP = 0.62422 MeV \n Z = "<<(fittotr->GetParameter(1)-0.62422)/fittotr->GetParameter(2)<<" \n";
+
+    cout<<" \n --------------------------- \n L-SHELL \n --------------------------- \n K-SHELL = ( "<<fittotr->GetParameter(6)<<" +- "<<fittotr->GetParameter(7)<<" ) MeV \n L-SHELL-EXP = 0.656 MeV \n Z =  "<<(fittotr->GetParameter(6)-0.656)/fittotr->GetParameter(7)<<" \n";
 
 }
 
@@ -140,6 +142,9 @@ TH1D *hcalibr (TH1D *h1) {
     int nbins = h1->GetXaxis()->GetNbins();
     double enmin = offset;
     double enmax = offset+calibr*2048;
+
+    cout<<(enmax-enmin)/nbins;
+
     TH1D *hnew = new TH1D("hnew"," Sorgente Cesio - Scatterless ",nbins,enmin,enmax); 
     for (int i=1;i<=nbins;i++) { 
         double y = h1->GetBinContent(i); 

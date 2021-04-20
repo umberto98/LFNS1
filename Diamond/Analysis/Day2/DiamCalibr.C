@@ -13,7 +13,7 @@ const double rangeNp[] = {1430,1470}; //solo un picco per Np
 
 const double EnCm[] = {5.76,5.81}; //MeV corrispondenti
 const double EnAm[] = {5.44,5.49}; //MeV picchi Americio
-const double EnNp[] = {4.7688}; //Unico MeV pesato con B.R. del Neptunio
+const double EnNp[] = {4.7688}; //Unico MeV pesato con B.R. del Nettunio
 
 void DiamCalibr () {
 
@@ -23,6 +23,8 @@ void DiamCalibr () {
     TH1D *hCm = new TH1D(*h1);
     TH1D *hAm = new TH1D(*h1);
     TH1D *hNp = new TH1D(*h1);
+
+    h1->SetTitle(" Sorgente Tripla - Nettunio/Americio/Curio ");
 
     TF1 *fitCm = new TF1("fitCm","gaus(0)+gaus(3)",rangeCm[0],rangeCm[3]);
     TF1 *fitAm = new TF1("fitAm","gaus(0)+gaus(3)",rangeAm[0],rangeAm[3]);
@@ -71,7 +73,7 @@ void DiamCalibr () {
     hCm->GetXaxis()->SetRangeUser(rangeCm[0]-10,rangeCm[3]+10);
     hCm->GetYaxis()->SetTitle("Counts");
 
-    hNp->SetTitle(" Neptunio ");
+    hNp->SetTitle(" Nettunio ");
     hNp->SetMarkerStyle(21);
    	hNp->SetMarkerSize(0.6);
     hNp->GetXaxis()->SetTitle("CH");
@@ -80,11 +82,11 @@ void DiamCalibr () {
 
     TCanvas *c1 = new TCanvas();
     h1->DrawCopy("hist");
-    h1->Fit(fitCm,"R+");
+    h1->Fit(fitCm,"R0");
     c1->Update();
-    h1->Fit(fitAm,"R+");
+    h1->Fit(fitAm,"R0");
     c1->Update();
-    h1->Fit(fitNp,"R+");
+    h1->Fit(fitNp,"R0");
 
     gStyle->SetOptStat(10); //solo entries
     gStyle->SetOptFit(1111); //parametri, prob e chi quadro ridotto
@@ -125,32 +127,21 @@ void DiamCalibr () {
 
     cout<<" --------------------------------- \n RETTA (INVERTITA) DI CALIBRAZIONE \n ---------------------------------\n";
 
-    //------------------
-    //RETTA CALIBRAZIONE
-    //------------------
+    //-------------------------------------------
+    //RETTA CALIBRAZIONE - FIT CH(E) e INVERSIONE
+    //-------------------------------------------
 
-    channel.push_back(fitNp->GetParameter(1)); //Neptunio
+    channel.push_back(fitNp->GetParameter(1)); //Nettunio
     channelerr.push_back(fitNp->GetParameter(2));
     energy.push_back(EnNp[0]);
-
-    /*channel.push_back(fitAm->GetParameter(4)); //Primo picco Americio
-    channelerr.push_back(fitAm->GetParameter(5));
-    energy.push_back(EnAm[0]);
-    */
 
     channel.push_back(fitAm->GetParameter(1)); //Secondo picco Americio
     channelerr.push_back(fitAm->GetParameter(2));
     energy.push_back(EnAm[1]);
 
-    /*channel.push_back(fitCm->GetParameter(4)); //Primo picco Curio
-    channelerr.push_back(fitCm->GetParameter(5));
-    energy.push_back(EnCm[0]);
-    */
-
     channel.push_back(fitCm->GetParameter(1)); //Secondo picco Curio
     channelerr.push_back(fitCm->GetParameter(2));
     energy.push_back(EnCm[1]);
-
 
     TGraphErrors *cal = new TGraphErrors(3,&energy[0],&channel[0],0,&channelerr[0]);
     cal->SetTitle(" Retta di Calibrazione Diamante ");
@@ -162,6 +153,8 @@ void DiamCalibr () {
     TCanvas *c5 = new TCanvas();
     cal->Draw("AP");
     cal->Fit(calfit,"R");
+
+    //Si assume matrice di covarianza diagonale
 
     double calib = calfit->GetParameter(1);
     double calibinv = 1./calib;
@@ -176,7 +169,7 @@ void DiamCalibr () {
 
     cout<<"\n --------------------------------- \n FATTORE DI CALIBRAZIONE \n ---------------------------------\n E(MeV) = ( "<<fixed<<setprecision(6)<<calibinv<<" +- "<<caliberr<<" ) * CH + ( "<<offsetinv<<" +- "<<offseterr<<" ) \n";
 
-    //METODO INVERSO
+    //METODO INVERSO - FIT E(CH) DIRETTO
 
     double energyerr[] = {1e-7,1e-7,1e-7};
 
@@ -192,6 +185,5 @@ void DiamCalibr () {
     calnew->Fit(newfit,"R");
 
     cout<<"\n --------------------------------- \n NUOVO FATTORE DI CALIBRAZIONE \n ---------------------------------\n E(MeV) = ( "<<fixed<<setprecision(6)<<newfit->GetParameter(1)<<" +- "<<newfit->GetParError(1)<<" ) * CH + ( "<<newfit->GetParameter(0)<<" +- "<<newfit->GetParError(0)<<" ) \n";
-
 
 }

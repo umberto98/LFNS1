@@ -8,7 +8,7 @@ const int ch = 2048; //numero canali MCA
 
 bool checkstr(string a, string b); //fa un check su due stringhe
 
-void ReadMCAtriple () {
+void ReadMCA () {
 
     TH1D *htriple = new TH1D("htriple"," Sorgente Tripla - Americio/Curio/Neptunio ",ch,0.,(double)ch);
 
