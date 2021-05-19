@@ -7,8 +7,8 @@
 #include "TLatex.h"
 
 //CALIBRAZIONE
-const double calibr = 0.003296; //da moltiplicare nei canali
-const double offset = -0.003978; //MeV
+const double calibr = 0.003289; //da moltiplicare nei canali
+const double offset = 0.007863; //MeV
 
 TH1D *hcalibr (TH1D *h1, double calibr, double offset); //ricalibra l'istogramma
 double calibration (double x) {return offset+calibr*x;}
@@ -27,7 +27,7 @@ void TripleSource () {
     TH1D *hAm = new TH1D(*h1);
     TH1D *hNp = new TH1D(*h1);
 
-    //Picchi ignoti a sinistra e a destra del Neptunio
+    //Picchi ignoti a sinistra e a destra del Nettunio
     TH1D *hNpl = new TH1D(*h1);
     TH1D *hNpr = new TH1D(*h1);
 
@@ -83,21 +83,21 @@ void TripleSource () {
     hCm->GetXaxis()->SetRangeUser(rangeCm[0],rangeCm[3]);
     hCm->GetYaxis()->SetTitle("Counts");
 
-    hNp->SetTitle(" Neptunio ");
+    hNp->SetTitle(" Nettunio ");
     hNp->SetMarkerStyle(21);
    	hNp->SetMarkerSize(0.6);
     hNp->GetXaxis()->SetTitle(" E [MeV] ");
     hNp->GetXaxis()->SetRangeUser(rangeNp[0],rangeNp[1]);
     hNp->GetYaxis()->SetTitle("Counts");
 
-    hNpl->SetTitle(" Neptunio - Picco Sinistro ");
+    hNpl->SetTitle(" Nettunio - Picco Sinistro ");
     hNpl->SetMarkerStyle(21);
    	hNpl->SetMarkerSize(0.6);
     hNpl->GetXaxis()->SetTitle(" E [MeV] ");
     hNpl->GetXaxis()->SetRangeUser(4.6,4.7);
     hNpl->GetYaxis()->SetTitle("Counts");
     
-    hNpr->SetTitle(" Neptunio - Picco Destro ");
+    hNpr->SetTitle(" Nettunio - Picco Destro ");
     hNpr->SetMarkerStyle(21);
    	hNpr->SetMarkerSize(0.6);
     hNpr->GetXaxis()->SetTitle(" E [MeV] ");
@@ -128,6 +128,7 @@ void TripleSource () {
         g[0]->SetParameter(i,fitCm->GetParameter(i+3));
         g[1]->SetParameter(i,fitCm->GetParameter(i));
     }
+    
     g[0]->SetLineColor(kGreen);
     g[1]->SetLineColor(kOrange);
     g[0]->Draw("same");
@@ -164,7 +165,7 @@ TH1D *hcalibr (TH1D *h1, double calibr, double offset) {
     int nbins = h1->GetXaxis()->GetNbins(); 
     double enmin = offset;
     double enmax = offset+calibr*2048;
-    TH1D *hnew = new TH1D("hnew"," Sorgente Tripla - Americio/Curio/Neptunio ",nbins,enmin,enmax); 
+    TH1D *hnew = new TH1D("hnew"," Sorgente Tripla - Americio/Curio/Nettunio ",nbins,enmin,enmax); 
     for (int i=1;i<=nbins;i++) { 
         double y = h1->GetBinContent(i); 
         double x = h1->GetXaxis()->GetBinCenter(i); 
